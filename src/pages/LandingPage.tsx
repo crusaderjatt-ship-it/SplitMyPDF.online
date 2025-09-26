@@ -3,97 +3,87 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { UploadCloud, Scissors, Combine, FolderArchive } from 'lucide-react';
 import { MadeWithDyad } from '@/components/made-with-dyad';
+import FeatureCard from '@/components/FeatureCard'; // Import the new FeatureCard
+import { UploadCloud, Scissors, Combine, FolderArchive } from 'lucide-react';
 
 const LandingPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-white">
       {/* Hero Section */}
-      <section className="relative py-20 md:py-32 text-center px-4">
-        <div className="container mx-auto max-w-4xl">
-          <h1 className="text-5xl md:text-6xl font-extrabold leading-tight mb-6 text-blue-800 dark:text-blue-300">
-            SplitMyPDF.online: Effortless PDF Management
+      <section className="relative py-24 md:py-40 text-center px-4 overflow-hidden">
+        <div className="container mx-auto max-w-5xl relative z-10">
+          <h1 className="text-6xl md:text-7xl font-extrabold leading-tight mb-8 text-blue-800 dark:text-blue-300 tracking-tight">
+            SplitMyPDF.online: <br className="hidden md:inline"/> Effortless PDF Management
           </h1>
-          <p className="text-xl md:text-2xl mb-10 text-gray-700 dark:text-gray-300">
-            Upload, Split, Merge, and Organize Your Documents with Ease. Secure, Fast, and User-Friendly.
+          <p className="text-xl md:text-2xl mb-12 text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
+            Upload, Split, Merge, and Organize Your Documents with unparalleled ease. Secure, lightning-fast, and intuitively designed for you.
           </p>
-          <Button asChild className="px-8 py-6 text-lg bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:-translate-y-1">
+          <Button asChild className="px-10 py-7 text-xl bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-2xl">
             <Link to="/login">Get Started Free</Link>
           </Button>
+        </div>
+        {/* Subtle background animation/elements for modern feel */}
+        <div className="absolute inset-0 z-0 opacity-10">
+          <div className="w-96 h-96 bg-blue-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob absolute top-0 left-0"></div>
+          <div className="w-96 h-96 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000 absolute bottom-0 right-0"></div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="py-16 md:py-24 bg-white dark:bg-gray-900 px-4">
-        <div className="container mx-auto max-w-6xl">
-          <h2 className="text-4xl font-bold text-center mb-16 text-gray-800 dark:text-white">
+      <section className="py-20 md:py-32 bg-white dark:bg-gray-900 px-4">
+        <div className="container mx-auto max-w-7xl">
+          <h2 className="text-5xl font-bold text-center mb-20 text-gray-800 dark:text-white tracking-tight">
             Powerful PDF Tools at Your Fingertips
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <Card className="flex flex-col items-center text-center p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 dark:bg-gray-800 dark:border-gray-700">
-              <UploadCloud className="h-12 w-12 text-blue-500 mb-4" />
-              <CardHeader>
-                <CardTitle className="text-2xl font-semibold text-gray-800 dark:text-white">Upload & Manage</CardTitle>
-              </CardHeader>
-              <CardContent className="text-gray-600 dark:text-gray-400">
-                Securely upload and store your PDF documents in the cloud. Access them anytime, anywhere.
-              </CardContent>
-            </Card>
-
-            <Card className="flex flex-col items-center text-center p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 dark:bg-gray-800 dark:border-gray-700">
-              <Scissors className="h-12 w-12 text-green-500 mb-4" />
-              <CardHeader>
-                <CardTitle className="text-2xl font-semibold text-gray-800 dark:text-white">Split PDFs</CardTitle>
-              </CardHeader>
-              <CardContent className="text-gray-600 dark:text-gray-400">
-                Break down large PDF files into individual pages or smaller documents. Perfect for extracting specific sections.
-              </CardContent>
-            </Card>
-
-            <Card className="flex flex-col items-center text-center p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 dark:bg-gray-800 dark:border-gray-700">
-              <Combine className="h-12 w-12 text-purple-500 mb-4" />
-              <CardHeader>
-                <CardTitle className="text-2xl font-semibold text-gray-800 dark:text-white">Merge PDFs</CardTitle>
-              </CardHeader>
-              <CardContent className="text-gray-600 dark:text-gray-400">
-                Combine multiple PDF files into a single, cohesive document. Streamline your reports, presentations, and more.
-              </CardContent>
-            </Card>
-
-            <Card className="flex flex-col items-center text-center p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 dark:bg-gray-800 dark:border-gray-700">
-              <FolderArchive className="h-12 w-12 text-orange-500 mb-4" />
-              <CardHeader>
-                <CardTitle className="text-2xl font-semibold text-gray-800 dark:text-white">Organize & Download</CardTitle>
-              </CardHeader>
-              <CardContent className="text-gray-600 dark:text-gray-400">
-                Keep your documents organized and download split or merged files with a single click, even as a ZIP.
-              </CardContent>
-            </Card>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 h-full">
+            <FeatureCard
+              title="Upload & Manage"
+              description="Securely upload and store your PDF documents in the cloud. Access them anytime, anywhere, with robust security."
+              icon={UploadCloud}
+              bgColorClass="bg-gradient-to-br from-blue-600 to-blue-400"
+            />
+            <FeatureCard
+              title="Split PDFs"
+              description="Effortlessly break down large PDF files into individual pages or smaller, manageable documents. Perfect for extracting specific sections."
+              icon={Scissors}
+              bgColorClass="bg-gradient-to-br from-green-600 to-green-400"
+            />
+            <FeatureCard
+              title="Merge PDFs"
+              description="Combine multiple PDF files into a single, cohesive document. Streamline your reports, presentations, and consolidate information."
+              icon={Combine}
+              bgColorClass="bg-gradient-to-br from-purple-600 to-purple-400"
+            />
+            <FeatureCard
+              title="Organize & Download"
+              description="Keep your documents perfectly organized and download split or merged files with a single click, including convenient ZIP archives."
+              icon={FolderArchive}
+              bgColorClass="bg-gradient-to-br from-orange-600 to-orange-400"
+            />
           </div>
         </div>
       </section>
 
       {/* Call to Action Section */}
-      <section className="py-20 md:py-28 text-center bg-blue-600 dark:bg-blue-800 text-white px-4">
-        <div className="container mx-auto max-w-3xl">
-          <h2 className="text-4xl md:text-5xl font-bold mb-8">
+      <section className="py-24 md:py-36 text-center bg-blue-700 dark:bg-blue-900 text-white px-4">
+        <div className="container mx-auto max-w-4xl">
+          <h2 className="text-5xl md:text-6xl font-bold mb-10 leading-tight">
             Ready to Simplify Your PDF Workflow?
           </h2>
-          <p className="text-xl md:text-2xl mb-10 opacity-90">
-            Join thousands of users who trust SplitMyPDF.online for their document needs.
+          <p className="text-xl md:text-2xl mb-14 opacity-90 max-w-3xl mx-auto">
+            Join thousands of satisfied users who trust SplitMyPDF.online for their essential document needs.
           </p>
-          <Button asChild className="px-10 py-7 text-xl bg-white hover:bg-gray-100 text-blue-600 dark:text-blue-800 rounded-full shadow-xl transition-all duration-300 ease-in-out transform hover:-translate-y-1">
-            <Link to="/login">Sign Up Now</Link>
+          <Button asChild className="px-12 py-8 text-2xl bg-white hover:bg-gray-100 text-blue-700 dark:text-blue-900 rounded-full shadow-xl transition-all duration-300 ease-in-out transform hover:-translate-y-2 hover:shadow-2xl">
+            <Link to="/login">Start Your Free Account</Link>
           </Button>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-8 bg-gray-800 dark:bg-gray-950 text-gray-400 text-center px-4">
+      <footer className="py-10 bg-gray-800 dark:bg-gray-950 text-gray-400 text-center px-4">
         <div className="container mx-auto">
-          <p className="mb-2">&copy; {new Date().getFullYear()} SplitMyPDF.online. All rights reserved.</p>
+          <p className="mb-3 text-lg">&copy; {new Date().getFullYear()} SplitMyPDF.online. All rights reserved.</p>
           <MadeWithDyad />
         </div>
       </footer>
