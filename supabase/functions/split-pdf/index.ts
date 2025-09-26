@@ -13,7 +13,6 @@ serve(async (req) => {
   }
 
   try {
-    // Create a Supabase client with the user's auth token
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_ANON_KEY') ?? '',
@@ -24,7 +23,6 @@ serve(async (req) => {
       }
     );
 
-    // Get the authenticated user
     const { data: { user } } = await supabaseClient.auth.getUser();
 
     if (!user) {
@@ -34,8 +32,7 @@ serve(async (req) => {
       });
     }
 
-    // Parse the request body to get the PDF path
-    const { pdfPath } = await req.json();
+    const { pdfPath, pagesPerSplit, getPageCountOnly } = await req.json();
 
     if (!pdfPath) {
       return new Response(JSON.stringify({ error: 'Missing pdfPath in request body' }), {
@@ -68,37 +65,47 @@ serve(async (req) => {
     const pdfBytes = await fileData.arrayBuffer();
     const pdfDoc = await PDFDocument.load(pdfBytes);
     const numberOfPages = pdfDoc.getPages().length;
-    const splitPdfUrls: string[] = [];
 
-    // Extract original file name for naming split pages
+    // If only page count is requested, return it and exit
+    if (getPageCountOnly) {
+      return new Response(JSON.stringify({ totalPdfPages: numberOfPages }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 200,
+      });
+    }
+
+    const splitPdfUrls: string[] = [];
     const originalFileName = pdfPath.split('/').pop()?.split('.').slice(0, -1).join('.') || 'document';
     const userFolder = user.id;
-    const splitFolder = `${userFolder}/split_pdfs`; // Subfolder for split PDFs
+    const splitFolder = `${userFolder}/split_pdfs`;
 
-    // Split each page and upload
-    for (let i = 0; i < numberOfPages; i++) {
+    const actualPagesPerSplit = pagesPerSplit && pagesPerSplit > 0 ? pagesPerSplit : 1;
+
+    for (let i = 0; i < numberOfPages; i += actualPagesPerSplit) {
       const newPdf = await PDFDocument.create();
-      const [copiedPage] = await newPdf.copyPages(pdfDoc, [i]);
-      newPdf.addPage(copiedPage);
+      const endPage = Math.min(i + actualPagesPerSplit, numberOfPages);
+      const pagesToCopy = Array.from({ length: endPage - i }, (_, k) => i + k);
+
+      const copiedPages = await newPdf.copyPages(pdfDoc, pagesToCopy);
+      copiedPages.forEach(page => newPdf.addPage(page));
 
       const splitPdfBytes = await newPdf.save();
-      const splitFileName = `${originalFileName}_page_${i + 1}.pdf`;
+      const partNumber = Math.floor(i / actualPagesPerSplit) + 1;
+      const splitFileName = `${originalFileName}_part_${partNumber}.pdf`;
       const splitFilePath = `${splitFolder}/${splitFileName}`;
 
-      // Upload the split PDF page
       const { data: uploadData, error: uploadError } = await supabaseClient.storage
         .from('user_pdfs')
         .upload(splitFilePath, splitPdfBytes, {
           contentType: 'application/pdf',
-          upsert: true, // Allow overwriting if a file with the same name exists
+          upsert: true,
         });
 
       if (uploadError) {
-        console.error(`Upload error for page ${i + 1}:`, uploadError);
-        throw new Error(`Failed to upload split PDF page ${i + 1}: ${uploadError.message}`);
+        console.error(`Upload error for part ${partNumber}:`, uploadError);
+        throw new Error(`Failed to upload split PDF part ${partNumber}: ${uploadError.message}`);
       }
 
-      // Get the public URL for the uploaded split page
       const { data: publicUrlData } = supabaseClient.storage
         .from('user_pdfs')
         .getPublicUrl(splitFilePath);

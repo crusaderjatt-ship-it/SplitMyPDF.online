@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom'; // Import useLocation
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { useSession } from '@/integrations/supabase/session-context';
@@ -15,11 +15,15 @@ interface AppHeaderProps {
 const AppHeader: React.FC<AppHeaderProps> = ({ className }) => {
   const { session } = useSession();
   const navigate = useNavigate();
+  const location = useLocation(); // Get current location
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
     navigate('/login');
   };
+
+  // Determine if the current path is the dashboard or an admin page
+  const isOnDashboard = location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/admin');
 
   return (
     <header className={cn(
@@ -29,19 +33,23 @@ const AppHeader: React.FC<AppHeaderProps> = ({ className }) => {
       className
     )}>
       <Link to="/" className="flex items-center space-x-2">
-        <img src="/SplitMyPDF_Logo.png" alt="Split My PDF Logo" className="h-10 w-auto" /> {/* Set height to h-10 and width to auto */}
+        <img src="/SplitMyPDF_Logo.png" alt="Split My PDF Logo" className="h-10 w-auto" />
       </Link>
 
       <nav className="flex items-center space-x-4">
-        <Link to="/#home" className="text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors">
-          Home
-        </Link>
-        <Link to="/#features" className="text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors">
-          Features
-        </Link>
-        <Link to="/#pricing" className="text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors">
-          Pricing
-        </Link>
+        {!isOnDashboard && ( // Conditionally render these links
+          <>
+            <Link to="/#home" className="text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors">
+              Home
+            </Link>
+            <Link to="/#features" className="text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors">
+              Features
+            </Link>
+            <Link to="/#pricing" className="text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors">
+              Pricing
+            </Link>
+          </>
+        )}
         {session ? (
           <>
             <Link to="/dashboard" className="text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors">
