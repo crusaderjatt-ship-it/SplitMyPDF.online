@@ -29,8 +29,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({ className }) => {
       className
     )}>
       <Link to="/" className="flex items-center space-x-2">
-        <img src="/placeholder.svg" alt="Split My PDF Logo" className="h-8 w-8" /> {/* Placeholder logo */}
-        <span className="text-2xl font-bold text-blue-700 dark:text-blue-300">Split My PDF</span>
+        <img src="/SplitMyPDF_Logo.png" alt="Split My PDF Logo" className="h-10" /> {/* New logo */}
       </Link>
 
       <nav className="flex items-center space-x-4">

@@ -21,7 +21,7 @@ const DashboardPage = () => {
       <AppHeader /> {/* AppHeader added here */}
 
       <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to SplitMyPDF.online, {user?.email}!</h1>
+        <h1 className="text-4xl font-bold mb-4">Welcome, {user?.email}!</h1>
         <p className="text-xl text-gray-600 dark:text-gray-400 mb-8">
           Your all-in-one portal for PDF management.
         </p>
