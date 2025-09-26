@@ -67,10 +67,10 @@ const Login = () => {
         <Card className="w-full max-w-md p-8 rounded-xl shadow-lg dark:bg-gray-800 border-2 border-blue-200 dark:border-blue-700">
           <CardHeader className="text-center p-0 mb-6">
             <CardTitle className="text-3xl font-bold mb-2 text-gray-900 dark:text-white">
-              Join SplitMyPDF.online
+              Welcome to SplitMyPDF.online
             </CardTitle>
             <CardDescription className="text-gray-600 dark:text-gray-400">
-              Sign in or create an account to continue.
+              Sign in or create an account to manage your PDFs.
             </CardDescription>
           </CardHeader>
           <CardContent className="p-0">
@@ -82,8 +82,29 @@ const Login = () => {
                 variables: {
                   default: {
                     colors: {
-                      brand: 'hsl(var(--primary))',
-                      brandAccent: 'hsl(var(--primary-foreground))',
+                      // Customizing the primary button to be blue
+                      button: {
+                        default: {
+                          background: 'hsl(221.2 83.2% 53.3%)', // A vibrant blue
+                          text: 'hsl(0 0% 100%)', // White text
+                          border: 'hsl(221.2 83.2% 53.3%)',
+                        },
+                        hover: {
+                          background: 'hsl(221.2 83.2% 45.3%)', // Slightly darker blue on hover
+                          text: 'hsl(0 0% 100%)',
+                          border: 'hsl(221.2 83.2% 45.3%)',
+                        },
+                      },
+                      // Ensuring input fields match the theme
+                      input: {
+                        background: 'hsl(var(--background))',
+                        border: 'hsl(var(--border))',
+                        focusBorder: 'hsl(var(--ring))',
+                        borderRadius: 'var(--radius)',
+                      },
+                      // Also setting brand and brandAccent for other elements if they use it
+                      brand: 'hsl(221.2 83.2% 53.3%)', // Primary brand color
+                      brandAccent: 'hsl(221.2 83.2% 45.3%)', // Accent for brand
                     },
                   },
                 },
