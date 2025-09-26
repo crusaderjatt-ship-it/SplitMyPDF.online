@@ -9,19 +9,12 @@ import { Button } from "@/components/ui/button"
 export function ThemeToggle() {
   const { theme, setTheme, resolvedTheme } = useTheme()
 
-  // Log current theme states for debugging
-  React.useEffect(() => {
-    console.log("ThemeToggle: Current 'theme' state:", theme);
-    console.log("ThemeToggle: Current 'resolvedTheme' state:", resolvedTheme);
-    // Also check if the 'dark' class is on the html element
-    const htmlElement = document.documentElement;
-    console.log("ThemeToggle: HTML element has 'dark' class:", htmlElement.classList.contains('dark'));
-  }, [theme, resolvedTheme]);
-
   const toggleTheme = () => {
-    const newTheme = resolvedTheme === "dark" ? "light" : "dark";
-    console.log("ThemeToggle: Attempting to set theme to:", newTheme);
-    setTheme(newTheme);
+    if (resolvedTheme === "dark") {
+      setTheme("light")
+    } else {
+      setTheme("dark")
+    }
   }
 
   return (
