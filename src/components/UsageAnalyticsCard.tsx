@@ -28,10 +28,12 @@ const UsageAnalyticsCard = () => {
       if (!user) {
         setAnalytics(null);
         setLoading(false);
+        console.log("UsageAnalyticsCard: No user session, skipping analytics fetch.");
         return;
       }
 
       setLoading(true);
+      console.log("UsageAnalyticsCard: Fetching analytics for user:", user.id);
       try {
         const { data, error } = await supabase
           .from('user_actions')
@@ -39,13 +41,18 @@ const UsageAnalyticsCard = () => {
           .eq('user_id', user.id);
 
         if (error) {
+          console.error("UsageAnalyticsCard: Supabase fetch error:", error);
           throw error;
         }
+
+        console.log("UsageAnalyticsCard: Raw data from Supabase:", data);
 
         const counts = data.reduce((acc: any, action: { action_type: string }) => {
           acc[action.action_type] = (acc[action.action_type] || 0) + 1;
           return acc;
         }, {});
+
+        console.log("UsageAnalyticsCard: Processed counts:", counts);
 
         setAnalytics({
           totalUploads: counts['upload_pdf'] || 0,
@@ -61,8 +68,10 @@ const UsageAnalyticsCard = () => {
       } catch (error: any) {
         showError(`Failed to fetch analytics: ${error.message}`);
         setAnalytics(null);
+        console.error("UsageAnalyticsCard: Caught error during analytics fetch:", error);
       } finally {
         setLoading(false);
+        console.log("UsageAnalyticsCard: Analytics fetch completed.");
       }
     };
 
