@@ -61,16 +61,20 @@ const PdfList = () => {
       return;
     }
 
+    console.log('Attempting to delete PDF:', { pdfPath, pdfName, userId: user.id });
+
     try {
       const { error } = await supabase.storage.from('user_pdfs').remove([pdfPath]);
 
       if (error) {
+        console.error('Supabase delete error:', error);
         throw error;
       }
 
       showSuccess(`"${pdfName}" deleted successfully.`);
       fetchPdfs(); // Refresh the list
     } catch (error: any) {
+      console.error('Caught delete error:', error);
       showError(`Failed to delete PDF: ${error.message}`);
     }
   };
