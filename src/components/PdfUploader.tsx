@@ -8,6 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useSession } from '@/integrations/supabase/session-context';
 import { showSuccess, showError } from '@/utils/toast';
 import { Progress } from '@/components/ui/progress';
+import { logUserAction } from '@/utils/analytics'; // Import logUserAction
 
 const MAX_FILE_SIZE_MB = 20;
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
@@ -69,7 +70,10 @@ const PdfUploader = () => {
       showSuccess('PDF uploaded successfully!');
       setSelectedFile(null); // Clear selected file after successful upload
       setUploadProgress(0);
-      // Here you might want to trigger a refresh of the user's PDF list
+      
+      // Log the upload action
+      logUserAction(user.id, 'upload_pdf', { fileName: selectedFile.name, fileSize: selectedFile.size });
+
     } catch (error: any) {
       showError(`Upload failed: ${error.message}`);
     } finally {
@@ -78,7 +82,7 @@ const PdfUploader = () => {
   };
 
   return (
-    <div className="w-full max-w-lg p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+    <div className="w-full p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
       <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Upload PDF</h3>
       <div className="grid w-full items-center gap-1.5 mb-4">
         <Label htmlFor="pdf-upload" className="text-gray-700 dark:text-gray-300">Choose PDF file (Max {MAX_FILE_SIZE_MB}MB)</Label>

@@ -6,6 +6,7 @@ import WorkflowStepper from "@/components/WorkflowStepper";
 import React, { useState } from "react";
 import { UploadCloud, Folder, Scissors, Combine } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import UsageAnalyticsCard from "@/components/UsageAnalyticsCard"; // Import UsageAnalyticsCard
 
 const workflowSteps = [
   { id: 'upload', name: 'Upload PDF', icon: UploadCloud },
@@ -26,7 +27,7 @@ const DashboardPage = () => {
     <div className="min-h-screen flex flex-col items-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-white p-4 space-y-8 pt-20">
       <AppHeader />
 
-      <div className="container mx-auto max-w-5xl w-full space-y-8">
+      <div className="container mx-auto max-w-6xl w-full space-y-8">
         {/* Welcome Card / Action Hub */}
         <Card className="w-full p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg border-none text-center">
           <CardHeader className="p-0 mb-4">
@@ -53,6 +54,9 @@ const DashboardPage = () => {
           currentStep={workflowSteps[currentStepIndex].id}
           onStepChange={handleStepChange}
         />
+
+        {/* Usage Analytics Section */}
+        <UsageAnalyticsCard />
       </div>
 
       <div className="mt-auto pb-4">

@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FileText, Trash2, Download, Loader2, FolderOpen } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Separator } from '@/components/ui/separator';
+import { logUserAction } from '@/utils/analytics'; // Import logUserAction
 
 interface SplitPdfFile {
   name: string;
@@ -112,6 +113,10 @@ const SplitPdfList = () => {
 
       showSuccess(`"${pdfName}" deleted successfully.`);
       fetchSplitPdfs(); // Refresh the list
+      
+      // Log the delete action
+      logUserAction(user.id, 'delete_split_page', { fileName: pdfName, filePath: pdfPath });
+
     } catch (error: any) {
       console.error('Caught delete error:', error);
       showError(`Failed to delete split PDF: ${error.message}`);
@@ -146,6 +151,9 @@ const SplitPdfList = () => {
       a.remove();
       window.URL.revokeObjectURL(url);
       showSuccess('All split PDFs downloaded successfully!');
+      
+      // Log the download action
+      logUserAction(user.id, 'download_all_split_pdfs', { count: Object.values(groupedSplitPdfs).flat().length });
 
     } catch (error: any) {
       console.error('Error invoking download-split-pdfs function:', error);
@@ -181,6 +189,10 @@ const SplitPdfList = () => {
       if (data && data.success) {
         showSuccess(`All split pages from "${originalFileName}" deleted successfully.`);
         fetchSplitPdfs(); // Refresh the list
+        
+        // Log the delete group action
+        logUserAction(user.id, 'delete_split_group', { originalFileName });
+
       } else {
         showError(`Failed to delete split pages from "${originalFileName}".`);
       }
@@ -217,6 +229,10 @@ const SplitPdfList = () => {
       if (data && data.success) {
         showSuccess('All split PDF pages deleted successfully!');
         setGroupedSplitPdfs({}); // Clear local state immediately
+        
+        // Log the delete all split PDFs action
+        logUserAction(user.id, 'delete_all_split_pdfs');
+
       } else {
         showError('Failed to delete all split PDF pages.');
       }
@@ -235,7 +251,7 @@ const SplitPdfList = () => {
   }
 
   return (
-    <Card className="w-full max-w-lg bg-white dark:bg-gray-800 shadow-md">
+    <Card className="w-full bg-white dark:bg-gray-800 shadow-md">
       <CardHeader>
         <CardTitle className="text-xl font-semibold text-gray-900 dark:text-white">Your Split PDF Pages</CardTitle>
       </CardHeader>

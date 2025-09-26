@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Loader2, Download, FileText } from 'lucide-react';
+import { logUserAction } from '@/utils/analytics'; // Import logUserAction
 
 interface PdfFile {
   name: string;
@@ -81,6 +82,10 @@ const PdfSplitter = () => {
       if (data && data.splitPdfUrls) {
         setSplitPdfUrls(data.splitPdfUrls);
         showSuccess('PDF split successfully!');
+        
+        // Log the split action
+        logUserAction(user.id, 'split_pdf', { originalFileName: selectedPdfPath.split('/').pop(), pagesProcessed: data.splitPdfUrls.length });
+
       } else {
         showError('PDF splitting failed: No URLs returned.');
       }
@@ -93,7 +98,7 @@ const PdfSplitter = () => {
   };
 
   return (
-    <Card className="w-full max-w-lg p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+    <Card className="w-full p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
       <CardHeader>
         <CardTitle className="text-xl font-semibold text-gray-900 dark:text-white">Split PDF</CardTitle>
       </CardHeader>

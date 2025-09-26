@@ -21,7 +21,7 @@ const PdfWorkflowPage: React.FC<PdfWorkflowPageProps> = ({ currentStep, onStepCh
         {/* TabsList and TabsTrigger are removed as navigation is handled by WorkflowStepper */}
         
         <TabsContent value="upload" className="mt-4 flex justify-center">
-          <Card className="w-full max-w-lg bg-white dark:bg-gray-800 rounded-xl shadow-md border-none">
+          <Card className="w-full bg-white dark:bg-gray-800 rounded-xl shadow-md border-none"> {/* Removed max-w-lg */}
             <CardContent className="p-6">
               <PdfUploader />
             </CardContent>

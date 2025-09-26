@@ -10,6 +10,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Loader2, FileText, Download } from 'lucide-react';
+import { logUserAction } from '@/utils/analytics'; // Import logUserAction
 
 interface PdfFile {
   name: string;
@@ -101,8 +102,10 @@ const PdfMerger = () => {
         showSuccess('PDFs merged successfully!');
         setSelectedPdfPaths([]); // Clear selection
         setMergedFileName(''); // Clear file name input
-        // Optionally, refresh the list of available PDFs if the merged PDF should appear there
-        // fetchAvailablePdfs(); 
+        
+        // Log the merge action
+        logUserAction(user.id, 'merge_pdfs', { mergedFileName: finalMergedFileName || `merged_document_${Date.now()}.pdf`, sourcePdfs: selectedPdfPaths.map(p => p.split('/').pop()) });
+
       } else {
         showError('PDF merging failed: No URL returned.');
       }
@@ -115,7 +118,7 @@ const PdfMerger = () => {
   };
 
   return (
-    <Card className="w-full max-w-lg p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+    <Card className="w-full p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
       <CardHeader>
         <CardTitle className="text-xl font-semibold text-gray-900 dark:text-white">Merge PDFs</CardTitle>
       </CardHeader>

@@ -7,6 +7,7 @@ import { showError, showSuccess } from '@/utils/toast';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FileText, Trash2 } from 'lucide-react';
+import { logUserAction } from '@/utils/analytics'; // Import logUserAction
 
 interface PdfFile {
   name: string;
@@ -73,6 +74,10 @@ const PdfList = () => {
 
       showSuccess(`"${pdfName}" deleted successfully.`);
       fetchPdfs(); // Refresh the list
+      
+      // Log the delete action
+      logUserAction(user.id, 'delete_pdf', { fileName: pdfName, filePath: pdfPath });
+
     } catch (error: any) {
       console.error('Caught delete error:', error);
       showError(`Failed to delete PDF: ${error.message}`);
@@ -84,7 +89,7 @@ const PdfList = () => {
   }
 
   return (
-    <Card className="w-full max-w-lg bg-white dark:bg-gray-800 shadow-md">
+    <Card className="w-full bg-white dark:bg-gray-800 shadow-md">
       <CardHeader>
         <CardTitle className="text-xl font-semibold text-gray-900 dark:text-white">Your Uploaded PDFs</CardTitle>
       </CardHeader>
