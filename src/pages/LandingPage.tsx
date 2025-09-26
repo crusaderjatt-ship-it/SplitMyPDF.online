@@ -5,7 +5,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { MadeWithDyad } from '@/components/made-with-dyad';
 import FeatureCard from '@/components/FeatureCard';
-import { UploadCloud, Scissors, Combine, FolderArchive, CheckCircle2, XCircle } from 'lucide-react'; // Import XCircle
+import { UploadCloud, Scissors, Combine, FolderArchive, CheckCircle2 } from 'lucide-react'; // Removed XCircle
 import AppHeader from '@/components/AppHeader';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
@@ -23,7 +23,7 @@ interface PricingTier {
 const LandingPage = () => {
   const [pricingTiers, setPricingTiers] = useState<PricingTier[]>([]);
   const [loadingPricing, setLoadingPricing] = useState(true);
-  const [allUniqueFeatures, setAllUniqueFeatures] = useState<string[]>([]); // New state for all unique features
+  // Removed allUniqueFeatures state as it's no longer needed for this display logic
   const location = useLocation();
 
   useEffect(() => {
@@ -41,12 +41,7 @@ const LandingPage = () => {
 
         if (data) {
           setPricingTiers(data || []);
-          // Derive all unique features from all tiers
-          const uniqueFeatures = new Set<string>();
-          data.forEach(tier => {
-            tier.features.forEach(feature => uniqueFeatures.add(feature));
-          });
-          setAllUniqueFeatures(Array.from(uniqueFeatures));
+          // No need to derive all unique features anymore
         }
       } catch (error: any) {
         showError(`Failed to load pricing: ${error.message}`);
@@ -170,30 +165,13 @@ const LandingPage = () => {
                   </CardHeader>
                   <CardContent className="p-0">
                     <ul className="space-y-3 text-lg text-gray-800 dark:text-gray-200 mb-8">
-                      {tier.name === 'Free' ? (
-                        // For Free plan, show all unique features with check/cross
-                        allUniqueFeatures.map((feature, index) => {
-                          const isIncluded = tier.features.includes(feature);
-                          return (
-                            <li key={index} className="flex items-center">
-                              {isIncluded ? (
-                                <CheckCircle2 className="h-5 w-5 text-green-500 mr-3 flex-shrink-0" />
-                              ) : (
-                                <XCircle className="h-5 w-5 text-red-500 mr-3 flex-shrink-0" />
-                              )}
-                              <span>{feature}</span>
-                            </li>
-                          );
-                        })
-                      ) : (
-                        // For other plans (e.g., Pro), just show included features with check
-                        tier.features.map((feature, index) => (
-                          <li key={index} className="flex items-center">
-                            <CheckCircle2 className="h-5 w-5 text-green-500 mr-3 flex-shrink-0" />
-                            <span>{feature}</span>
-                          </li>
-                        ))
-                      )}
+                      {/* Now only iterating through features explicitly included in the tier */}
+                      {tier.features.map((feature, index) => (
+                        <li key={index} className="flex items-center">
+                          <CheckCircle2 className="h-5 w-5 text-green-500 mr-3 flex-shrink-0" />
+                          <span>{feature}</span>
+                        </li>
+                      ))}
                     </ul>
                     <Button className="w-full py-6 text-xl bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white rounded-lg shadow-md">
                       {tier.name === 'Free' ? 'Get Started Free' : 'Choose Pro Plan'}
