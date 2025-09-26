@@ -5,7 +5,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import PdfUploader from "@/components/PdfUploader";
 import PdfList from "@/components/PdfList";
-import PdfSplitter from "@/components/PdfSplitter"; // Import the new component
+import PdfSplitter from "@/components/PdfSplitter";
+import SplitPdfList from "@/components/SplitPdfList"; // Import the new component
 
 const Index = () => {
   const { user } = useSession();
@@ -36,6 +37,9 @@ const Index = () => {
 
       {/* Integrate the PDF Splitter component */}
       <PdfSplitter />
+
+      {/* Integrate the Split PDF List component */}
+      <SplitPdfList />
 
       <div className="absolute bottom-4">
         <MadeWithDyad />
