@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom'; // Import useLocation
+import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { MadeWithDyad } from '@/components/made-with-dyad';
 import FeatureCard from '@/components/FeatureCard';
-import { UploadCloud, Scissors, Combine, FolderArchive, CheckCircle2 } from 'lucide-react';
+import { UploadCloud, Scissors, Combine, FolderArchive, CheckCircle2, XCircle } from 'lucide-react'; // Import XCircle
 import AppHeader from '@/components/AppHeader';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
@@ -23,7 +23,8 @@ interface PricingTier {
 const LandingPage = () => {
   const [pricingTiers, setPricingTiers] = useState<PricingTier[]>([]);
   const [loadingPricing, setLoadingPricing] = useState(true);
-  const location = useLocation(); // Initialize useLocation
+  const [allUniqueFeatures, setAllUniqueFeatures] = useState<string[]>([]); // New state for all unique features
+  const location = useLocation();
 
   useEffect(() => {
     const fetchPricing = async () => {
@@ -38,7 +39,15 @@ const LandingPage = () => {
           throw error;
         }
 
-        setPricingTiers(data || []);
+        if (data) {
+          setPricingTiers(data || []);
+          // Derive all unique features from all tiers
+          const uniqueFeatures = new Set<string>();
+          data.forEach(tier => {
+            tier.features.forEach(feature => uniqueFeatures.add(feature));
+          });
+          setAllUniqueFeatures(Array.from(uniqueFeatures));
+        }
       } catch (error: any) {
         showError(`Failed to load pricing: ${error.message}`);
       } finally {
@@ -54,21 +63,19 @@ const LandingPage = () => {
     if (location.hash) {
       const element = document.getElementById(location.hash.substring(1));
       if (element) {
-        // Use setTimeout to ensure the header has rendered and the scroll position is calculated correctly
         setTimeout(() => {
-          const headerOffset = 80; // Approximate height of your fixed header
+          const headerOffset = 80;
           const elementPosition = element.getBoundingClientRect().top + window.scrollY;
           window.scrollTo({
             top: elementPosition - headerOffset,
             behavior: 'smooth'
           });
-        }, 100); // Small delay to allow page to render
+        }, 100);
       }
     } else {
-      // If no hash, scroll to top when navigating to the landing page
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-  }, [location]); // Rerun when location changes
+  }, [location]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-white">
@@ -163,12 +170,30 @@ const LandingPage = () => {
                   </CardHeader>
                   <CardContent className="p-0">
                     <ul className="space-y-3 text-lg text-gray-800 dark:text-gray-200 mb-8">
-                      {tier.features.map((feature, index) => (
-                        <li key={index} className="flex items-center">
-                          <CheckCircle2 className="h-5 w-5 text-green-500 mr-3 flex-shrink-0" />
-                          <span>{feature}</span>
-                        </li>
-                      ))}
+                      {tier.name === 'Free' ? (
+                        // For Free plan, show all unique features with check/cross
+                        allUniqueFeatures.map((feature, index) => {
+                          const isIncluded = tier.features.includes(feature);
+                          return (
+                            <li key={index} className="flex items-center">
+                              {isIncluded ? (
+                                <CheckCircle2 className="h-5 w-5 text-green-500 mr-3 flex-shrink-0" />
+                              ) : (
+                                <XCircle className="h-5 w-5 text-red-500 mr-3 flex-shrink-0" />
+                              )}
+                              <span>{feature}</span>
+                            </li>
+                          );
+                        })
+                      ) : (
+                        // For other plans (e.g., Pro), just show included features with check
+                        tier.features.map((feature, index) => (
+                          <li key={index} className="flex items-center">
+                            <CheckCircle2 className="h-5 w-5 text-green-500 mr-3 flex-shrink-0" />
+                            <span>{feature}</span>
+                          </li>
+                        ))
+                      )}
                     </ul>
                     <Button className="w-full py-6 text-xl bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white rounded-lg shadow-md">
                       {tier.name === 'Free' ? 'Get Started Free' : 'Choose Pro Plan'}
