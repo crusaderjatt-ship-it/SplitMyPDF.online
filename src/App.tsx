@@ -37,24 +37,30 @@ const AppRoutes = () => {
   }
 
   return (
-    <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/landing" element={<LandingPage />} /> {/* Explicit landing page route */}
-      <Route
-        path="/"
-        element={session ? <Navigate to="/dashboard" replace /> : <LandingPage />} // If authenticated, redirect to dashboard, else show landing
-      />
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute>
-            <DashboardPage />
-          </ProtectedRoute>
-        }
-      />
-      {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+    <>
+      {/* TEST DIV FOR DARK MODE */}
+      <div className="p-4 bg-red-500 dark:bg-blue-500 text-white text-center">
+        This div should be red in light mode and blue in dark mode.
+      </div>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/landing" element={<LandingPage />} /> {/* Explicit landing page route */}
+        <Route
+          path="/"
+          element={session ? <Navigate to="/dashboard" replace /> : <LandingPage />} // If authenticated, redirect to dashboard, else show landing
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <DashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </>
   );
 };
 
