@@ -3,7 +3,8 @@ import { useSession } from "@/integrations/supabase/session-context";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
-import DashboardLayout from "@/components/DashboardLayout"; // Import the new DashboardLayout
+import DashboardLayout from "@/components/DashboardLayout";
+import { ThemeToggle } from "@/components/ThemeToggle"; // Import ThemeToggle
 
 const DashboardPage = () => {
   const { user } = useSession();
@@ -16,6 +17,11 @@ const DashboardPage = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white p-4 space-y-8">
+      {/* Theme Toggle */}
+      <div className="absolute top-4 right-4 z-50">
+        <ThemeToggle />
+      </div>
+
       <div className="text-center">
         <h1 className="text-4xl font-bold mb-4">Welcome to SplitMyPDF.online, {user?.email}!</h1>
         <p className="text-xl text-gray-600 dark:text-gray-400 mb-8">

@@ -4,12 +4,18 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { MadeWithDyad } from '@/components/made-with-dyad';
-import FeatureCard from '@/components/FeatureCard'; // Import the new FeatureCard
+import FeatureCard from '@/components/FeatureCard';
 import { UploadCloud, Scissors, Combine, FolderArchive } from 'lucide-react';
+import { ThemeToggle } from '@/components/ThemeToggle'; // Will be created next
 
 const LandingPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-white">
+      {/* Theme Toggle */}
+      <div className="absolute top-4 right-4 z-50">
+        <ThemeToggle />
+      </div>
+
       {/* Hero Section */}
       <section className="relative py-24 md:py-40 text-center px-4 overflow-hidden">
         <div className="container mx-auto max-w-5xl relative z-10">
@@ -42,24 +48,28 @@ const LandingPage = () => {
               description="Securely upload and store your PDF documents in the cloud. Access them anytime, anywhere, with robust security."
               icon={UploadCloud}
               bgColorClass="bg-gradient-to-br from-blue-600 to-blue-400"
+              glowColorClass="from-blue-300/70"
             />
             <FeatureCard
               title="Split PDFs"
               description="Effortlessly break down large PDF files into individual pages or smaller, manageable documents. Perfect for extracting specific sections."
               icon={Scissors}
               bgColorClass="bg-gradient-to-br from-green-600 to-green-400"
+              glowColorClass="from-green-300/70"
             />
             <FeatureCard
               title="Merge PDFs"
               description="Combine multiple PDF files into a single, cohesive document. Streamline your reports, presentations, and consolidate information."
               icon={Combine}
               bgColorClass="bg-gradient-to-br from-purple-600 to-purple-400"
+              glowColorClass="from-purple-300/70"
             />
             <FeatureCard
               title="Organize & Download"
               description="Keep your documents perfectly organized and download split or merged files with a single click, including convenient ZIP archives."
               icon={FolderArchive}
               bgColorClass="bg-gradient-to-br from-orange-600 to-orange-400"
+              glowColorClass="from-orange-300/70"
             />
           </div>
         </div>

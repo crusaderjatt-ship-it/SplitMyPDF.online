@@ -9,6 +9,7 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import { SessionContextProvider, useSession } from "./integrations/supabase/session-context";
 import React from "react";
+import { ThemeProvider } from "@/components/theme-provider"; // Import ThemeProvider
 
 const queryClient = new QueryClient();
 
@@ -59,15 +60,17 @@ const AppRoutes = () => {
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <SessionContextProvider>
-          <AppRoutes /> {/* Use the new AppRoutes component */}
-        </SessionContextProvider>
-      </BrowserRouter>
-    </TooltipProvider>
+    <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme"> {/* ThemeProvider added here */}
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <SessionContextProvider>
+            <AppRoutes /> {/* Use the new AppRoutes component */}
+          </SessionContextProvider>
+        </BrowserRouter>
+      </TooltipProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 
