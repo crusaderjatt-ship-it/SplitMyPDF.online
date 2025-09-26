@@ -6,18 +6,15 @@ import { Button } from '@/components/ui/button';
 import { MadeWithDyad } from '@/components/made-with-dyad';
 import FeatureCard from '@/components/FeatureCard';
 import { UploadCloud, Scissors, Combine, FolderArchive } from 'lucide-react';
-import { ThemeToggle } from '@/components/ThemeToggle'; // Will be created next
+import AppHeader from '@/components/AppHeader'; // Import AppHeader
 
 const LandingPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-white">
-      {/* Theme Toggle */}
-      <div className="absolute top-4 right-4 z-50">
-        <ThemeToggle />
-      </div>
+      <AppHeader /> {/* AppHeader added here */}
 
       {/* Hero Section */}
-      <section className="relative py-24 md:py-40 text-center px-4 overflow-hidden">
+      <section className="relative py-24 md:py-40 text-center px-4 overflow-hidden pt-32"> {/* Adjusted padding for header */}
         <div className="container mx-auto max-w-5xl relative z-10">
           <h1 className="text-6xl md:text-7xl font-extrabold leading-tight mb-8 text-blue-800 dark:text-blue-300 tracking-tight">
             SplitMyPDF.online: <br className="hidden md:inline"/> Effortless PDF Management
