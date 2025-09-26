@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom'; // Import useLocation
 import { Button } from '@/components/ui/button';
 import { MadeWithDyad } from '@/components/made-with-dyad';
 import FeatureCard from '@/components/FeatureCard';
@@ -23,6 +23,7 @@ interface PricingTier {
 const LandingPage = () => {
   const [pricingTiers, setPricingTiers] = useState<PricingTier[]>([]);
   const [loadingPricing, setLoadingPricing] = useState(true);
+  const location = useLocation(); // Initialize useLocation
 
   useEffect(() => {
     const fetchPricing = async () => {
@@ -47,6 +48,27 @@ const LandingPage = () => {
 
     fetchPricing();
   }, []);
+
+  // Effect to handle scrolling to hash fragments
+  useEffect(() => {
+    if (location.hash) {
+      const element = document.getElementById(location.hash.substring(1));
+      if (element) {
+        // Use setTimeout to ensure the header has rendered and the scroll position is calculated correctly
+        setTimeout(() => {
+          const headerOffset = 80; // Approximate height of your fixed header
+          const elementPosition = element.getBoundingClientRect().top + window.scrollY;
+          window.scrollTo({
+            top: elementPosition - headerOffset,
+            behavior: 'smooth'
+          });
+        }, 100); // Small delay to allow page to render
+      }
+    } else {
+      // If no hash, scroll to top when navigating to the landing page
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [location]); // Rerun when location changes
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-white">
