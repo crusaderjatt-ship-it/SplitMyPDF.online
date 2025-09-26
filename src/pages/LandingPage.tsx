@@ -23,7 +23,6 @@ interface PricingTier {
 const LandingPage = () => {
   const [pricingTiers, setPricingTiers] = useState<PricingTier[]>([]);
   const [loadingPricing, setLoadingPricing] = useState(true);
-  // Removed allUniqueFeatures state as it's no longer needed for this display logic
   const location = useLocation();
 
   useEffect(() => {
@@ -41,7 +40,6 @@ const LandingPage = () => {
 
         if (data) {
           setPricingTiers(data || []);
-          // No need to derive all unique features anymore
         }
       } catch (error: any) {
         showError(`Failed to load pricing: ${error.message}`);
@@ -53,7 +51,6 @@ const LandingPage = () => {
     fetchPricing();
   }, []);
 
-  // Effect to handle scrolling to hash fragments
   useEffect(() => {
     if (location.hash) {
       const element = document.getElementById(location.hash.substring(1));
@@ -163,9 +160,8 @@ const LandingPage = () => {
                       {tier.price > 0 && <span className="text-xl font-medium text-gray-500 dark:text-gray-400">/month</span>}
                     </p>
                   </CardHeader>
-                  <CardContent className="p-0">
-                    <ul className="space-y-3 text-lg text-gray-800 dark:text-gray-200 mb-8">
-                      {/* Now only iterating through features explicitly included in the tier */}
+                  <CardContent className="p-0 flex flex-col flex-grow justify-between"> {/* Added flex-grow and flex-col justify-between */}
+                    <ul className="space-y-3 text-lg text-gray-800 dark:text-gray-200"> {/* Removed mb-8 */}
                       {tier.features.map((feature, index) => (
                         <li key={index} className="flex items-center">
                           <CheckCircle2 className="h-5 w-5 text-green-500 mr-3 flex-shrink-0" />
@@ -173,7 +169,7 @@ const LandingPage = () => {
                         </li>
                       ))}
                     </ul>
-                    <Button className="w-full py-6 text-xl bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white rounded-lg shadow-md">
+                    <Button className="w-full py-6 text-xl bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white rounded-lg shadow-md mt-8"> {/* Added mt-8 for spacing */}
                       {tier.name === 'Free' ? 'Get Started Free' : 'Choose Pro Plan'}
                     </Button>
                   </CardContent>
