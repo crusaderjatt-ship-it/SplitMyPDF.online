@@ -77,7 +77,7 @@ const LandingPage = () => {
       <section id="home" className="relative py-24 md:py-40 text-center px-4 overflow-hidden pt-32">
         <div className="container mx-auto max-w-5xl relative z-10">
           <h1 className="text-6xl md:text-7xl font-extrabold leading-tight mb-8 text-blue-800 dark:text-blue-300 tracking-tight">
-            SplitMyPDF.online: <br className="hidden md:inline"/> Effortless PDF Management
+            SplitMyPDF.online <br className="hidden md:inline"/> Effortless PDF Management
           </h1>
           <p className="text-xl md:text-2xl mb-12 text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
             Upload, Split, Merge, and Organize Your Documents with unparalleled ease. Secure, lightning-fast, and intuitively designed for you.
