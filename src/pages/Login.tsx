@@ -5,8 +5,9 @@ import { useSession } from '@/integrations/supabase/session-context';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AppHeader from '@/components/AppHeader';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'; // Import Card components
-import { CheckCircle2 } from 'lucide-react'; // Import CheckCircle2 icon
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { CheckCircle2 } from 'lucide-react';
+import { MadeWithDyad } from '@/components/made-with-dyad'; // Import MadeWithDyad
 
 const Login = () => {
   const { session, isLoading } = useSession();
@@ -28,9 +29,15 @@ const Login = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-4 pt-20">
+    <div className="relative min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-4 pt-20 overflow-hidden">
+      {/* Subtle background animation/elements for modern feel */}
+      <div className="absolute inset-0 z-0 opacity-10">
+        <div className="w-96 h-96 bg-blue-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob absolute top-0 left-0"></div>
+        <div className="w-96 h-96 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000 absolute bottom-0 right-0"></div>
+      </div>
+
       <AppHeader />
-      <div className="container mx-auto max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-8 items-center py-12">
+      <div className="container mx-auto max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-8 items-center py-12 relative z-10">
         {/* Left Section: Marketing Text */}
         <div className="text-center lg:text-left p-6 lg:p-10 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg">
           <img src="/SplitMyPDF_Logo.png" alt="Split My PDF Logo" className="h-16 w-auto mx-auto lg:mx-0 mb-6" />
@@ -70,7 +77,7 @@ const Login = () => {
           <CardContent>
             <Auth
               supabaseClient={supabase}
-              providers={[]} // Only email/password by default, can add 'google', 'github' etc.
+              providers={[]}
               appearance={{
                 theme: ThemeSupa,
                 variables: {
@@ -82,12 +89,20 @@ const Login = () => {
                   },
                 },
               }}
-              theme="light" // Can be 'dark' or 'light'
-              redirectTo={window.location.origin + '/dashboard'} // Redirect to dashboard after auth
+              theme="light"
+              redirectTo={window.location.origin + '/dashboard'}
             />
           </CardContent>
         </Card>
       </div>
+
+      {/* SEO-friendly Footer */}
+      <footer className="absolute bottom-4 w-full text-center text-gray-600 dark:text-gray-400 text-sm z-10">
+        <p className="mb-1">
+          <span className="font-semibold">SplitMyPDF.online:</span> Your ultimate tool for secure and efficient PDF management.
+        </p>
+        <MadeWithDyad />
+      </footer>
     </div>
   );
 };
