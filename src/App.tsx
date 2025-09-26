@@ -7,12 +7,12 @@ import DashboardPage from "./pages/DashboardPage";
 import LandingPage from "./pages/LandingPage";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
-import PricingPage from "./pages/PricingPage"; // Import PricingPage
-import AdminPricingPage from "./pages/AdminPricingPage"; // Import AdminPricingPage
+// import PricingPage from "./pages/PricingPage"; // Removed: Pricing content is now on LandingPage
+import AdminPricingPage from "./pages/AdminPricingPage";
 import { SessionContextProvider, useSession } from "./integrations/supabase/session-context";
 import React from "react";
 import { ThemeProvider } from "@/components/theme-provider";
-import AppHeader from "@/components/AppHeader"; // Import AppHeader
+import AppHeader from "@/components/AppHeader";
 
 const queryClient = new QueryClient();
 
@@ -41,11 +41,11 @@ const AppRoutes = () => {
 
   return (
     <>
-      <AppHeader /> {/* Render AppHeader on all pages */}
+      <AppHeader />
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/landing" element={<LandingPage />} />
-        <Route path="/pricing" element={<PricingPage />} /> {/* New Pricing Page Route */}
+        {/* <Route path="/pricing" element={<PricingPage />} /> Removed: Pricing content is now on LandingPage */}
         <Route
           path="/"
           element={session ? <Navigate to="/dashboard" replace /> : <LandingPage />}

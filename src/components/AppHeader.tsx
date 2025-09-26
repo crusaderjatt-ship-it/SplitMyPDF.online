@@ -34,9 +34,15 @@ const AppHeader: React.FC<AppHeaderProps> = ({ className }) => {
       </Link>
 
       <nav className="flex items-center space-x-4">
-        <Link to="/pricing" className="text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors">
+        <a href="#home" className="text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors">
+          Home
+        </a>
+        <a href="#features" className="text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors">
+          Features
+        </a>
+        <a href="#pricing" className="text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors">
           Pricing
-        </Link>
+        </a>
         {session ? (
           <>
             <Link to="/dashboard" className="text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors">

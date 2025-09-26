@@ -1,20 +1,59 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { MadeWithDyad } from '@/components/made-with-dyad';
 import FeatureCard from '@/components/FeatureCard';
-import { UploadCloud, Scissors, Combine, FolderArchive } from 'lucide-react';
-import AppHeader from '@/components/AppHeader'; // Import AppHeader
+import { UploadCloud, Scissors, Combine, FolderArchive, CheckCircle2 } from 'lucide-react';
+import AppHeader from '@/components/AppHeader';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { supabase } from '@/integrations/supabase/client';
+import { showError } from '@/utils/toast';
+
+interface PricingTier {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  features: string[];
+  is_active: boolean;
+}
 
 const LandingPage = () => {
+  const [pricingTiers, setPricingTiers] = useState<PricingTier[]>([]);
+  const [loadingPricing, setLoadingPricing] = useState(true);
+
+  useEffect(() => {
+    const fetchPricing = async () => {
+      setLoadingPricing(true);
+      try {
+        const { data, error } = await supabase
+          .from('pricing_tiers')
+          .select('*')
+          .order('price', { ascending: true });
+
+        if (error) {
+          throw error;
+        }
+
+        setPricingTiers(data || []);
+      } catch (error: any) {
+        showError(`Failed to load pricing: ${error.message}`);
+      } finally {
+        setLoadingPricing(false);
+      }
+    };
+
+    fetchPricing();
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-white">
-      <AppHeader /> {/* AppHeader added here */}
+      <AppHeader />
 
       {/* Hero Section */}
-      <section className="relative py-24 md:py-40 text-center px-4 overflow-hidden pt-32"> {/* Adjusted padding for header */}
+      <section id="home" className="relative py-24 md:py-40 text-center px-4 overflow-hidden pt-32">
         <div className="container mx-auto max-w-5xl relative z-10">
           <h1 className="text-6xl md:text-7xl font-extrabold leading-tight mb-8 text-blue-800 dark:text-blue-300 tracking-tight">
             SplitMyPDF.online: <br className="hidden md:inline"/> Effortless PDF Management
@@ -34,7 +73,7 @@ const LandingPage = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 md:py-32 bg-white dark:bg-gray-900 px-4">
+      <section id="features" className="py-20 md:py-32 bg-white dark:bg-gray-900 px-4">
         <div className="container mx-auto max-w-7xl">
           <h2 className="text-5xl font-bold text-center mb-20 text-gray-800 dark:text-white tracking-tight">
             Powerful PDF Tools at Your Fingertips
@@ -72,8 +111,56 @@ const LandingPage = () => {
         </div>
       </section>
 
+      {/* Pricing Section */}
+      <section id="pricing" className="py-20 md:py-32 bg-gray-100 dark:bg-gray-900 px-4">
+        <div className="container mx-auto max-w-6xl">
+          <h2 className="text-5xl font-extrabold text-center mb-6 text-blue-800 dark:text-blue-300">
+            Simple, Transparent Pricing
+          </h2>
+          <p className="text-xl text-center mb-16 text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
+            Choose the plan that best fits your PDF management needs. Upgrade anytime!
+          </p>
+
+          {loadingPricing ? (
+            <p className="text-center text-gray-700 dark:text-gray-300">Loading pricing plans...</p>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {pricingTiers.map((tier) => (
+                <Card key={tier.id} className="flex flex-col justify-between p-8 rounded-xl shadow-lg dark:bg-gray-800 border-2 border-blue-200 dark:border-blue-700">
+                  <CardHeader className="p-0 mb-6">
+                    <CardTitle className="text-4xl font-bold mb-2 text-blue-700 dark:text-blue-300">
+                      {tier.name}
+                    </CardTitle>
+                    <CardDescription className="text-lg text-gray-600 dark:text-gray-400">
+                      {tier.description}
+                    </CardDescription>
+                    <p className="text-5xl font-extrabold mt-4 text-gray-900 dark:text-white">
+                      {tier.price === 0 ? 'Free' : `$${tier.price.toFixed(2)}`}
+                      {tier.price > 0 && <span className="text-xl font-medium text-gray-500 dark:text-gray-400">/month</span>}
+                    </p>
+                  </CardHeader>
+                  <CardContent className="p-0">
+                    <ul className="space-y-3 text-lg text-gray-800 dark:text-gray-200 mb-8">
+                      {tier.features.map((feature, index) => (
+                        <li key={index} className="flex items-center">
+                          <CheckCircle2 className="h-5 w-5 text-green-500 mr-3 flex-shrink-0" />
+                          <span>{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <Button className="w-full py-6 text-xl bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white rounded-lg shadow-md">
+                      {tier.name === 'Free' ? 'Get Started Free' : 'Choose Pro Plan'}
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
       {/* Call to Action Section */}
-      <section className="py-24 md:py-36 text-center bg-blue-700 dark:bg-blue-900 text-white px-4">
+      <section id="cta" className="py-24 md:py-36 text-center bg-blue-700 dark:bg-blue-900 text-white px-4">
         <div className="container mx-auto max-w-4xl">
           <h2 className="text-5xl md:text-6xl font-bold mb-10 leading-tight">
             Ready to Simplify Your PDF Workflow?
@@ -88,7 +175,7 @@ const LandingPage = () => {
       </section>
 
       {/* Footer */}
-      <footer className="py-10 bg-gray-800 dark:bg-gray-950 text-gray-400 text-center px-4">
+      <footer id="footer" className="py-10 bg-gray-800 dark:bg-gray-950 text-gray-400 text-center px-4">
         <div className="container mx-auto">
           <p className="mb-3 text-lg">&copy; {new Date().getFullYear()} SplitMyPDF.online. All rights reserved.</p>
           <MadeWithDyad />
