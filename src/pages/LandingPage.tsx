@@ -14,7 +14,7 @@ const LandingPage = () => {
       <section className="relative py-20 md:py-32 text-center px-4">
         <div className="container mx-auto max-w-4xl">
           <h1 className="text-5xl md:text-6xl font-extrabold leading-tight mb-6 text-blue-800 dark:text-blue-300">
-            Effortless PDF Management for Everyone
+            SplitMyPDF.online: Effortless PDF Management
           </h1>
           <p className="text-xl md:text-2xl mb-10 text-gray-700 dark:text-gray-300">
             Upload, Split, Merge, and Organize Your Documents with Ease. Secure, Fast, and User-Friendly.
@@ -82,7 +82,7 @@ const LandingPage = () => {
             Ready to Simplify Your PDF Workflow?
           </h2>
           <p className="text-xl md:text-2xl mb-10 opacity-90">
-            Join thousands of users who trust our platform for their document needs.
+            Join thousands of users who trust SplitMyPDF.online for their document needs.
           </p>
           <Button asChild className="px-10 py-7 text-xl bg-white hover:bg-gray-100 text-blue-600 dark:text-blue-800 rounded-full shadow-xl transition-all duration-300 ease-in-out transform hover:-translate-y-1">
             <Link to="/login">Sign Up Now</Link>
@@ -93,7 +93,7 @@ const LandingPage = () => {
       {/* Footer */}
       <footer className="py-8 bg-gray-800 dark:bg-gray-950 text-gray-400 text-center px-4">
         <div className="container mx-auto">
-          <p className="mb-2">&copy; {new Date().getFullYear()} PDF SaaS. All rights reserved.</p>
+          <p className="mb-2">&copy; {new Date().getFullYear()} SplitMyPDF.online. All rights reserved.</p>
           <MadeWithDyad />
         </div>
       </footer>
