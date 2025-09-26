@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import AppHeader from '@/components/AppHeader';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { CheckCircle2 } from 'lucide-react';
-import { MadeWithDyad } from '@/components/made-with-dyad'; // Import MadeWithDyad
+import { MadeWithDyad } from '@/components/made-with-dyad';
 
 const Login = () => {
   const { session, isLoading } = useSession();
@@ -37,36 +37,34 @@ const Login = () => {
       </div>
 
       <AppHeader />
-      <div className="container mx-auto max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-8 items-center py-12 relative z-10">
-        {/* Left Section: Marketing Text */}
-        <div className="text-center lg:text-left p-6 lg:p-10 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg">
-          <img src="/SplitMyPDF_Logo.png" alt="Split My PDF Logo" className="h-16 w-auto mx-auto lg:mx-0 mb-6" />
-          <h2 className="text-4xl font-extrabold mb-4 text-blue-800 dark:text-blue-300 leading-tight">
-            Your Gateway to Effortless PDF Management
-          </h2>
-          <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">
-            Welcome to SplitMyPDF.online! Sign in or sign up to access your personalized dashboard.
-            A world of seamless PDF organization, splitting, and merging awaits you.
-          </p>
-          <ul className="space-y-3 text-left text-gray-700 dark:text-gray-300 text-base lg:text-lg">
-            <li className="flex items-center">
-              <CheckCircle2 className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" />
-              Instant PDF Splitting & Merging
-            </li>
-            <li className="flex items-center">
-              <CheckCircle2 className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" />
-              Secure Cloud Storage for All Your Docs
-            </li>
-            <li className="flex items-center">
-              <CheckCircle2 className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" />
-              Intuitive Interface, Zero Learning Curve
-            </li>
-          </ul>
-        </div>
+      <div className="container mx-auto max-w-md py-12 relative z-10"> {/* Centered and max-width adjusted */}
+        <Card className="w-full mx-auto p-8 rounded-xl shadow-lg dark:bg-gray-800 border-2 border-blue-200 dark:border-blue-700">
+          {/* Marketing Text moved to the top of the login card */}
+          <div className="text-center mb-8">
+            <h2 className="text-4xl font-extrabold mb-4 text-blue-800 dark:text-blue-300 leading-tight">
+              Your Gateway to Effortless PDF Management
+            </h2>
+            <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">
+              Welcome to SplitMyPDF.online! Sign in or sign up to access your personalized dashboard.
+              A world of seamless PDF organization, splitting, and merging awaits you.
+            </p>
+            <ul className="space-y-3 text-left text-gray-700 dark:text-gray-300 text-base mx-auto max-w-xs"> {/* Centered list */}
+              <li className="flex items-center">
+                <CheckCircle2 className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" />
+                Instant PDF Splitting & Merging
+              </li>
+              <li className="flex items-center">
+                <CheckCircle2 className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" />
+                Secure Cloud Storage for All Your Docs
+              </li>
+              <li className="flex items-center">
+                <CheckCircle2 className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" />
+                Intuitive Interface, Zero Learning Curve
+              </li>
+            </ul>
+          </div>
 
-        {/* Right Section: Auth Form */}
-        <Card className="w-full max-w-md mx-auto p-8 rounded-xl shadow-lg dark:bg-gray-800 border-2 border-blue-200 dark:border-blue-700">
-          <CardHeader className="text-center">
+          <CardHeader className="text-center p-0 mb-6"> {/* Adjusted padding */}
             <CardTitle className="text-3xl font-bold mb-2 text-gray-900 dark:text-white">
               Join SplitMyPDF.online
             </CardTitle>
@@ -74,7 +72,7 @@ const Login = () => {
               Sign in or create an account to continue.
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-0"> {/* Adjusted padding */}
             <Auth
               supabaseClient={supabase}
               providers={[]}
