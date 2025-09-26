@@ -39,7 +39,7 @@ const AppRoutes = () => {
   return (
     <>
       {/* TEST DIV FOR DARK MODE */}
-      <div className="p-4 bg-red-500 dark:bg-blue-500 text-white text-center">
+      <div className="p-4 bg-red-500 dark:!bg-blue-500 text-white text-center">
         This div should be red in light mode and blue in dark mode.
       </div>
       <Routes>
