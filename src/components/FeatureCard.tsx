@@ -15,12 +15,15 @@ interface FeatureCardProps {
 const FeatureCard: React.FC<FeatureCardProps> = ({ title, description, icon: Icon, bgColorClass }) => {
   return (
     <Card className={cn(
-      "relative flex flex-col justify-between h-full p-8 rounded-3xl overflow-hidden shadow-xl transition-all duration-300 ease-in-out transform hover:scale-[1.02] border-none",
+      "group relative flex flex-col justify-between h-full p-8 rounded-3xl overflow-hidden shadow-xl transition-all duration-300 ease-in-out transform hover:scale-[1.02] border-none",
       bgColorClass
     )}>
-      <div className="absolute inset-0 opacity-20">
+      {/* Background illuminance effect on hover */}
+      <div className="absolute inset-0 z-0 opacity-20">
         {/* Optional: Add a subtle pattern or texture here for more depth */}
       </div>
+      <div className="absolute inset-0 z-0 rounded-3xl bg-radial-gradient from-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+      
       <CardHeader className="relative z-10 p-0 mb-6">
         <Icon className="h-16 w-16 text-white mb-4 drop-shadow-md" />
         <CardTitle className="text-3xl font-bold text-white leading-tight drop-shadow-sm">
