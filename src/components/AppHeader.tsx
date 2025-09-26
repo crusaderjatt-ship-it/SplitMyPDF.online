@@ -29,7 +29,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({ className }) => {
       className
     )}>
       <Link to="/" className="flex items-center space-x-2">
-        <img src="/SplitMyPDF_Logo.png" alt="Split My PDF Logo" className="h-12" /> {/* Increased logo size to h-12 */}
+        <img src="/SplitMyPDF_Logo.png" alt="Split My PDF Logo" /> {/* Removed h-12 to allow natural size */}
       </Link>
 
       <nav className="flex items-center space-x-4">
