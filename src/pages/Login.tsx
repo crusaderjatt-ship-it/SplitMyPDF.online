@@ -8,10 +8,12 @@ import AppHeader from '@/components/AppHeader';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { CheckCircle2 } from 'lucide-react';
 import { MadeWithDyad } from '@/components/made-with-dyad';
+import { useTheme } from 'next-themes'; // Import useTheme
 
 const Login = () => {
   const { session, isLoading } = useSession();
   const navigate = useNavigate();
+  const { resolvedTheme } = useTheme(); // Get the resolved theme (light or dark)
 
   useEffect(() => {
     if (session && !isLoading) {
@@ -80,9 +82,10 @@ const Login = () => {
               appearance={{
                 theme: ThemeSupa,
                 variables: {
-                  default: {
+                  default: { // Light theme variables
                     colors: {
-                      // Customizing the primary button to be blue
+                      brand: 'hsl(221.2 83.2% 53.3%)', // Primary brand color
+                      brandAccent: 'hsl(221.2 83.2% 45.3%)', // Accent for brand
                       button: {
                         default: {
                           background: 'hsl(221.2 83.2% 53.3%)', // A vibrant blue
@@ -95,21 +98,47 @@ const Login = () => {
                           border: 'hsl(221.2 83.2% 45.3%)',
                         },
                       },
-                      // Ensuring input fields match the theme
                       input: {
                         background: 'hsl(var(--background))',
                         border: 'hsl(var(--border))',
                         focusBorder: 'hsl(var(--ring))',
                         borderRadius: 'var(--radius)',
                       },
-                      // Also setting brand and brandAccent for other elements if they use it
-                      brand: 'hsl(221.2 83.2% 53.3%)', // Primary brand color
-                      brandAccent: 'hsl(221.2 83.2% 45.3%)', // Accent for brand
+                    },
+                  },
+                  dark: { // Dark theme variables
+                    colors: {
+                      brand: 'hsl(221.2 83.2% 65.3%)', // Adjusted primary for dark theme
+                      brandAccent: 'hsl(221.2 83.2% 55.3%)', // Adjusted accent for dark theme
+                      button: {
+                        default: {
+                          background: 'hsl(221.2 83.2% 65.3%)', // Dark theme blue
+                          text: 'hsl(0 0% 100%)',
+                          border: 'hsl(221.2 83.2% 65.3%)',
+                        },
+                        hover: {
+                          background: 'hsl(221.2 83.2% 55.3%)', // Darker blue on hover
+                          text: 'hsl(0 0% 100%)',
+                          border: 'hsl(221.2 83.2% 55.3%)',
+                        },
+                      },
+                      input: {
+                        background: 'hsl(var(--input))', // Use existing dark input background
+                        border: 'hsl(var(--border))',
+                        focusBorder: 'hsl(var(--ring))',
+                        borderRadius: 'var(--radius)',
+                      },
+                      // You might want to adjust other colors like text, background, etc.
+                      // based on your global dark theme variables if ThemeSupa doesn't pick them up automatically.
+                      // For example:
+                      // text: 'hsl(var(--foreground))',
+                      // defaultButtonBackground: 'hsl(var(--primary))',
+                      // defaultButtonText: 'hsl(var(--primary-foreground))',
                     },
                   },
                 },
               }}
-              theme="light"
+              theme={resolvedTheme === 'dark' ? 'dark' : 'light'} // Dynamically set theme
               redirectTo={window.location.origin + '/dashboard'}
             />
           </CardContent>
