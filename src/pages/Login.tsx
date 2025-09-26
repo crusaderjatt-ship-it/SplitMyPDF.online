@@ -37,34 +37,35 @@ const Login = () => {
       </div>
 
       <AppHeader />
-      <div className="container mx-auto max-w-md py-12 relative z-10"> {/* Centered and max-width adjusted */}
-        <Card className="w-full mx-auto p-8 rounded-xl shadow-lg dark:bg-gray-800 border-2 border-blue-200 dark:border-blue-700">
-          {/* Marketing Text moved to the top of the login card */}
-          <div className="text-center mb-8">
-            <h2 className="text-4xl font-extrabold mb-4 text-blue-800 dark:text-blue-300 leading-tight">
-              Your Gateway to Effortless PDF Management
-            </h2>
-            <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">
-              Welcome to SplitMyPDF.online! Sign in or sign up to access your personalized dashboard.
-              A world of seamless PDF organization, splitting, and merging awaits you.
-            </p>
-            <ul className="space-y-3 text-left text-gray-700 dark:text-gray-300 text-base mx-auto max-w-xs"> {/* Centered list */}
-              <li className="flex items-center">
-                <CheckCircle2 className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" />
-                Instant PDF Splitting & Merging
-              </li>
-              <li className="flex items-center">
-                <CheckCircle2 className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" />
-                Secure Cloud Storage for All Your Docs
-              </li>
-              <li className="flex items-center">
-                <CheckCircle2 className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" />
-                Intuitive Interface, Zero Learning Curve
-              </li>
-            </ul>
-          </div>
+      <div className="container mx-auto max-w-3xl py-12 relative z-10 flex flex-col items-center">
+        {/* Marketing Text Section */}
+        <div className="text-center mb-12 max-w-2xl">
+          <h2 className="text-4xl font-extrabold mb-4 text-blue-800 dark:text-blue-300 leading-tight">
+            Your Gateway to Effortless PDF Management
+          </h2>
+          <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">
+            Welcome to SplitMyPDF.online! Sign in or sign up to access your personalized dashboard.
+            A world of seamless PDF organization, splitting, and merging awaits you.
+          </p>
+          <ul className="space-y-3 text-left text-gray-700 dark:text-gray-300 text-base mx-auto max-w-xs">
+            <li className="flex items-center">
+              <CheckCircle2 className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" />
+              Instant PDF Splitting & Merging
+            </li>
+            <li className="flex items-center">
+              <CheckCircle2 className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" />
+              Secure Cloud Storage for All Your Docs
+            </li>
+            <li className="flex items-center">
+              <CheckCircle2 className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" />
+              Intuitive Interface, Zero Learning Curve
+            </li>
+          </ul>
+        </div>
 
-          <CardHeader className="text-center p-0 mb-6"> {/* Adjusted padding */}
+        {/* Login Card (only one box) */}
+        <Card className="w-full max-w-md p-8 rounded-xl shadow-lg dark:bg-gray-800 border-2 border-blue-200 dark:border-blue-700">
+          <CardHeader className="text-center p-0 mb-6">
             <CardTitle className="text-3xl font-bold mb-2 text-gray-900 dark:text-white">
               Join SplitMyPDF.online
             </CardTitle>
@@ -72,7 +73,7 @@ const Login = () => {
               Sign in or create an account to continue.
             </CardDescription>
           </CardHeader>
-          <CardContent className="p-0"> {/* Adjusted padding */}
+          <CardContent className="p-0">
             <Auth
               supabaseClient={supabase}
               providers={[]}
