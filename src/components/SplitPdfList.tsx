@@ -14,7 +14,6 @@ import { logUserAction } from '@/utils/analytics'; // Import logUserAction
 interface SplitPdfFile {
   name: string;
   path: string;
-  publicUrl: string;
   originalFileName: string; // Added to group files
 }
 
@@ -29,6 +28,8 @@ const SplitPdfList = () => {
   const [downloadingAll, setDownloadingAll] = useState(false);
   const [deletingGroup, setDeletingGroup] = useState<string | null>(null);
   const [deletingAll, setDeletingAll] = useState(false);
+  const [individualDownloadLoading, setIndividualDownloadLoading] = useState<string | null>(null);
+
 
   const fetchSplitPdfs = useCallback(async () => {
     if (!user) {
@@ -53,20 +54,16 @@ const SplitPdfList = () => {
       for (const file of data) {
         if (file.name !== '.emptyFolderPlaceholder') {
           const filePath = `${splitFolderPath}/${file.name}`;
-          const { data: publicUrlData } = supabase.storage.from('user_pdfs').getPublicUrl(filePath);
           
           // Extract original file name for grouping
           const match = file.name.match(/(.*)_page_\d+\.pdf/);
           const originalFileName = match ? match[1] + '.pdf' : 'Unknown Original PDF'; // Re-add .pdf for clarity
 
-          if (publicUrlData.publicUrl) {
-            fetchedPdfs.push({
-              name: file.name,
-              path: filePath,
-              publicUrl: publicUrlData.publicUrl,
-              originalFileName: originalFileName,
-            });
-          }
+          fetchedPdfs.push({
+            name: file.name,
+            path: filePath,
+            originalFileName: originalFileName,
+          });
         }
       }
 
@@ -90,6 +87,43 @@ const SplitPdfList = () => {
   useEffect(() => {
     fetchSplitPdfs();
   }, [fetchSplitPdfs]);
+
+  const handleDownloadIndividualPdf = async (pdfPath: string, pdfName: string) => {
+    if (!user) {
+      showError('You must be logged in to download files.');
+      return;
+    }
+
+    setIndividualDownloadLoading(pdfPath);
+    try {
+      // Generate a signed URL for the private file
+      const { data, error } = await supabase.storage
+        .from('user_pdfs')
+        .createSignedUrl(pdfPath, 60); // URL valid for 60 seconds
+
+      if (error) {
+        throw error;
+      }
+
+      if (data?.signedUrl) {
+        const a = document.createElement('a');
+        a.href = data.signedUrl;
+        a.download = pdfName; // Suggest original file name
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        showSuccess(`"${pdfName}" downloaded successfully.`);
+        logUserAction(user.id, 'download_split_page', { fileName: pdfName, filePath: pdfPath });
+      } else {
+        showError('Failed to get a signed URL for download.');
+      }
+    } catch (error: any) {
+      console.error('Error downloading individual split PDF:', error);
+      showError(`Failed to download "${pdfName}": ${error.message}`);
+    } finally {
+      setIndividualDownloadLoading(null);
+    }
+  };
 
   const handleDeleteSplitPdf = async (pdfPath: string, pdfName: string) => {
     if (!user) {
@@ -333,12 +367,20 @@ const SplitPdfList = () => {
                             <span className="text-sm text-gray-800 dark:text-gray-200 truncate">{pdf.name}</span>
                           </div>
                           <div className="flex items-center gap-2 flex-shrink-0 ml-4">
-                            <a href={pdf.publicUrl} target="_blank" rel="noopener noreferrer">
-                              <Button variant="outline" size="sm" className="flex items-center gap-1">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleDownloadIndividualPdf(pdf.path, pdf.name)}
+                              disabled={individualDownloadLoading === pdf.path}
+                              className="flex items-center gap-1"
+                            >
+                              {individualDownloadLoading === pdf.path ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                              ) : (
                                 <Download className="h-4 w-4" />
-                                Download
-                              </Button>
-                            </a>
+                              )}
+                              Download
+                            </Button>
                             <Button
                               variant="destructive"
                               size="sm"
