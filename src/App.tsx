@@ -3,7 +3,8 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Index from "./pages/Index";
+import DashboardPage from "./pages/DashboardPage"; // Renamed from Index
+import LandingPage from "./pages/LandingPage"; // New landing page
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import { SessionContextProvider, useSession } from "./integrations/supabase/session-context";
@@ -11,7 +12,7 @@ import React from "react";
 
 const queryClient = new QueryClient();
 
-// ProtectedRoute component to guard routes
+// ProtectedRoute component to guard routes that require authentication
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { session, isLoading } = useSession();
 
@@ -26,6 +27,36 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
+// Component to handle conditional routing based on authentication status
+const AppRoutes = () => {
+  const { session, isLoading } = useSession();
+
+  if (isLoading) {
+    return <div className="min-h-screen flex items-center justify-center">Loading authentication...</div>;
+  }
+
+  return (
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="/landing" element={<LandingPage />} /> {/* Explicit landing page route */}
+      <Route
+        path="/"
+        element={session ? <Navigate to="/dashboard" replace /> : <LandingPage />} // If authenticated, redirect to dashboard, else show landing
+      />
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <DashboardPage />
+          </ProtectedRoute>
+        }
+      />
+      {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -33,19 +64,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <SessionContextProvider>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route
-              path="/"
-              element={
-                <ProtectedRoute>
-                  <Index />
-                </ProtectedRoute>
-              }
-            />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <AppRoutes /> {/* Use the new AppRoutes component */}
         </SessionContextProvider>
       </BrowserRouter>
     </TooltipProvider>
