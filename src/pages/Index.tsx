@@ -3,10 +3,7 @@ import { useSession } from "@/integrations/supabase/session-context";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
-import PdfUploader from "@/components/PdfUploader";
-import PdfList from "@/components/PdfList";
-import PdfSplitter from "@/components/PdfSplitter";
-import SplitPdfList from "@/components/SplitPdfList"; // Import the new component
+import DashboardLayout from "@/components/DashboardLayout"; // Import the new DashboardLayout
 
 const Index = () => {
   const { user } = useSession();
@@ -29,17 +26,8 @@ const Index = () => {
         </Button>
       </div>
 
-      {/* Integrate the PDF Uploader component */}
-      <PdfUploader />
-
-      {/* Integrate the PDF List component */}
-      <PdfList />
-
-      {/* Integrate the PDF Splitter component */}
-      <PdfSplitter />
-
-      {/* Integrate the Split PDF List component */}
-      <SplitPdfList />
+      {/* Integrate the new DashboardLayout component */}
+      <DashboardLayout />
 
       <div className="absolute bottom-4">
         <MadeWithDyad />
