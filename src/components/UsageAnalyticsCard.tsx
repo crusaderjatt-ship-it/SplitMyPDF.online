@@ -30,7 +30,7 @@ interface KpiCardProps {
 
 const KpiCard: React.FC<KpiCardProps> = ({ icon: Icon, label, value, bgColorClass, iconColorClass, glowColorClass }) => (
   <Card className={cn(
-    "group relative flex flex-col justify-between h-full p-4 rounded-lg shadow-sm transition-all duration-300 ease-in-out transform hover:scale-[1.02] border-none overflow-hidden",
+    "group relative flex flex-col justify-between h-full p-4 rounded-lg shadow-sm transition-all duration-300 ease-in-out transform hover:scale-[1.02] overflow-hidden", // Removed border-none
     bgColorClass
   )}>
     {/* Colored immersive glow on hover */}
@@ -147,7 +147,7 @@ const UsageAnalyticsCard = () => {
           icon={UploadCloud}
           label="PDFs Uploaded"
           value={analytics.totalUploads}
-          bgColorClass="bg-blue-50 dark:bg-gray-800"
+          bgColorClass="bg-blue-50 dark:bg-card" // Changed to dark:bg-card
           iconColorClass="text-blue-600 dark:text-blue-400"
           glowColorClass="from-blue-300/70"
         />
@@ -155,7 +155,7 @@ const UsageAnalyticsCard = () => {
           icon={Scissors}
           label="PDFs Split"
           value={analytics.totalSplits}
-          bgColorClass="bg-green-50 dark:bg-gray-800"
+          bgColorClass="bg-green-50 dark:bg-card" // Changed to dark:bg-card
           iconColorClass="text-green-600 dark:text-green-400"
           glowColorClass="from-green-300/70"
         />
@@ -163,7 +163,7 @@ const UsageAnalyticsCard = () => {
           icon={Combine}
           label="PDFs Merged"
           value={analytics.totalMerges}
-          bgColorClass="bg-purple-50 dark:bg-gray-800"
+          bgColorClass="bg-purple-50 dark:bg-card" // Changed to dark:bg-card
           iconColorClass="text-purple-600 dark:text-purple-400"
           glowColorClass="from-purple-300/70"
         />
@@ -171,7 +171,7 @@ const UsageAnalyticsCard = () => {
           icon={Trash2}
           label="Original PDFs Deleted"
           value={analytics.totalDeletes}
-          bgColorClass="bg-red-50 dark:bg-gray-800"
+          bgColorClass="bg-red-50 dark:bg-card" // Changed to dark:bg-card
           iconColorClass="text-red-600 dark:text-red-400"
           glowColorClass="from-red-300/70"
         />
@@ -179,7 +179,7 @@ const UsageAnalyticsCard = () => {
           icon={Trash2}
           label="Split Pages Deleted"
           value={analytics.totalSplitPageDeletes + analytics.totalSplitGroupDeletes + analytics.totalAllSplitDeletes}
-          bgColorClass="bg-yellow-50 dark:bg-gray-800"
+          bgColorClass="bg-yellow-50 dark:bg-card" // Changed to dark:bg-card
           iconColorClass="text-yellow-600 dark:text-yellow-400"
           glowColorClass="from-yellow-300/70"
         />
@@ -187,7 +187,7 @@ const UsageAnalyticsCard = () => {
           icon={Download}
           label="All Split PDFs Downloaded"
           value={analytics.totalAllSplitDownloads}
-          bgColorClass="bg-indigo-50 dark:bg-gray-800"
+          bgColorClass="bg-indigo-50 dark:bg-card" // Changed to dark:bg-card
           iconColorClass="text-indigo-600 dark:text-indigo-400"
           glowColorClass="from-indigo-300/70"
         />
