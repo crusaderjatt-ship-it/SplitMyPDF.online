@@ -33,16 +33,15 @@ const KpiCard: React.FC<KpiCardProps> = ({ icon: Icon, label, value, bgColorClas
     "group relative flex flex-col justify-between h-full p-4 rounded-lg shadow-sm transition-all duration-300 ease-in-out transform hover:scale-[1.02] border-none overflow-hidden",
     bgColorClass
   )}>
-    {/* Colored immersive glow on hover - adjusted for edge glow */}
+    {/* Colored immersive glow on hover */}
     <div className={cn(
-      "absolute inset-0 rounded-lg z-0",
-      // Changed from bg-radial-gradient to a solid background color derived from glowColorClass
-      // This will convert 'from-blue-300/70' to 'bg-blue-300/70'
-      glowColorClass.replace('from-', 'bg-'), 
+      "absolute rounded-lg z-0",
+      "inset-[-10px]", // Creates a spread effect by extending 10px on all sides
+      "translate-x-2 translate-y-2", // Offsets the glow slightly to the bottom-right
+      glowColorClass.replace('from-', 'bg-'), // Uses a solid background color for the glow
       "opacity-0 group-hover:opacity-100 transition-opacity duration-300",
-      // Adjusted scale to make it appear slightly larger than the card, creating an edge glow
-      "scale-105 group-hover:scale-115 transition-transform duration-300 ease-out", 
-      "filter blur-2xl" // Increased blur for a softer, more diffused glow
+      "transition-transform duration-300 ease-out", // Smooth transition for the offset
+      "filter blur-2xl" // Applies a 40px blur for a soft glow
     )}></div>
     <div className="relative z-10 flex items-center space-x-3">
       <Icon className={cn("h-6 w-6 drop-shadow-md", iconColorClass)} />
