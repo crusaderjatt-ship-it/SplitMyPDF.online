@@ -10,7 +10,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { showError, showSuccess } from '@/utils/toast';
-import AppHeader from '@/components/AppHeader'; // Import AppHeader
+import AppHeader from '@/components/AppHeader';
 
 interface PricingTier {
   id: string;
@@ -25,29 +25,54 @@ const AdminPricingPage = () => {
   const [pricingTiers, setPricingTiers] = useState<PricingTier[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [pricingVisible, setPricingVisible] = useState(true); // New state for pricing visibility
+  const [savingVisibility, setSavingVisibility] = useState(false); // New state for saving visibility
 
-  const fetchPricing = async () => {
+  const fetchPricingAndSettings = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase
+      // Fetch pricing tiers
+      const { data: pricingData, error: pricingError } = await supabase
         .from('pricing_tiers')
         .select('*')
         .order('name', { ascending: true });
 
-      if (error) {
-        throw error;
+      if (pricingError) {
+        throw pricingError;
+      }
+      setPricingTiers(pricingData || []);
+
+      // Fetch pricing visibility setting
+      const { data: settingsData, error: settingsError } = await supabase
+        .from('app_settings')
+        .select('setting_value')
+        .eq('setting_name', 'pricing_visibility')
+        .single();
+
+      if (settingsError && settingsError.code !== 'PGRST116') { // PGRST116 means no rows found
+        throw settingsError;
       }
 
-      setPricingTiers(data || []);
+      if (settingsData) {
+        setPricingVisible(settingsData.setting_value.pricing_visible);
+      } else {
+        // If no setting found, assume default true and insert it
+        await supabase.from('app_settings').insert({
+          setting_name: 'pricing_visibility',
+          setting_value: { pricing_visible: true },
+        });
+        setPricingVisible(true);
+      }
+
     } catch (error: any) {
-      showError(`Failed to load pricing for admin: ${error.message}`);
+      showError(`Failed to load data: ${error.message}`);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchPricing();
+    fetchPricingAndSettings();
   }, []);
 
   const handleInputChange = (id: string, field: keyof PricingTier, value: any) => {
@@ -64,7 +89,7 @@ const AdminPricingPage = () => {
     );
   };
 
-  const handleSave = async (tier: PricingTier) => {
+  const handleSavePricingTier = async (tier: PricingTier) => {
     setSaving(true);
     try {
       const { error } = await supabase
@@ -84,7 +109,7 @@ const AdminPricingPage = () => {
       }
 
       showSuccess(`${tier.name} pricing updated successfully!`);
-      fetchPricing(); // Re-fetch to ensure latest data
+      fetchPricingAndSettings(); // Re-fetch to ensure latest data
     } catch (error: any) {
       showError(`Failed to save ${tier.name} pricing: ${error.message}`);
     } finally {
@@ -92,11 +117,34 @@ const AdminPricingPage = () => {
     }
   };
 
+  const handleTogglePricingVisibility = async (checked: boolean | 'indeterminate') => {
+    if (typeof checked !== 'boolean') return;
+
+    setSavingVisibility(true);
+    try {
+      const { error } = await supabase
+        .from('app_settings')
+        .update({ setting_value: { pricing_visible: checked }, updated_at: new Date().toISOString() })
+        .eq('setting_name', 'pricing_visibility');
+
+      if (error) {
+        throw error;
+      }
+
+      setPricingVisible(checked);
+      showSuccess(`Pricing section visibility updated to ${checked ? 'visible' : 'hidden'}.`);
+    } catch (error: any) {
+      showError(`Failed to update pricing visibility: ${error.message}`);
+    } finally {
+      setSavingVisibility(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 dark:bg-gray-900 p-4">
         <AppHeader />
-        <p className="text-gray-700 dark:text-gray-300 mt-20">Loading pricing plans for admin...</p>
+        <p className="text-gray-700 dark:text-gray-300 mt-20">Loading admin settings...</p>
       </div>
     );
   }
@@ -106,8 +154,29 @@ const AdminPricingPage = () => {
       <AppHeader />
       <div className="container mx-auto max-w-4xl px-4 py-12">
         <h1 className="text-4xl font-bold text-center mb-10 text-gray-900 dark:text-white">
-          Admin: Manage Pricing Tiers
+          Admin: Manage Pricing Tiers & Settings
         </h1>
+
+        {/* Pricing Visibility Toggle */}
+        <Card className="p-6 rounded-xl shadow-lg dark:bg-gray-800 border border-gray-200 dark:border-gray-700 mb-8">
+          <CardHeader className="p-0 mb-4">
+            <CardTitle className="text-2xl font-bold text-blue-700 dark:text-blue-300">
+              Homepage Pricing Section Visibility
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-0 flex items-center space-x-2">
+            <Checkbox
+              id="pricing-visibility"
+              checked={pricingVisible}
+              onCheckedChange={handleTogglePricingVisibility}
+              disabled={savingVisibility}
+            />
+            <Label htmlFor="pricing-visibility" className="text-lg text-gray-700 dark:text-gray-300">
+              Show Pricing Section on Homepage and in Navigation
+            </Label>
+            {savingVisibility && <Loader2 className="ml-2 h-4 w-4 animate-spin text-blue-600 dark:text-blue-400" />}
+          </CardContent>
+        </Card>
 
         <div className="space-y-8">
           {pricingTiers.map((tier) => (
@@ -165,7 +234,7 @@ const AdminPricingPage = () => {
                   <Label htmlFor={`is_active-${tier.id}`} className="text-gray-700 dark:text-gray-300">Is Active</Label>
                 </div>
                 <Button
-                  onClick={() => handleSave(tier)}
+                  onClick={() => handleSavePricingTier(tier)}
                   disabled={saving}
                   className="w-full bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500 dark:hover:bg-blue-600"
                 >

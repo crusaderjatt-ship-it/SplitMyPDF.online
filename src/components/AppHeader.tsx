@@ -1,7 +1,7 @@
 "use client";
 
-import React from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom'; // Import useLocation
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { useSession } from '@/integrations/supabase/session-context';
@@ -15,14 +15,46 @@ interface AppHeaderProps {
 const AppHeader: React.FC<AppHeaderProps> = ({ className }) => {
   const { session } = useSession();
   const navigate = useNavigate();
-  const location = useLocation(); // Get current location
+  const location = useLocation();
+  const [pricingVisible, setPricingVisible] = useState(true); // State for pricing visibility
+  const [loadingSettings, setLoadingSettings] = useState(true);
+
+  useEffect(() => {
+    const fetchPricingVisibility = async () => {
+      setLoadingSettings(true);
+      try {
+        const { data, error } = await supabase
+          .from('app_settings')
+          .select('setting_value')
+          .eq('setting_name', 'pricing_visibility')
+          .single();
+
+        if (error && error.code !== 'PGRST116') { // PGRST116 means no rows found
+          throw error;
+        }
+
+        if (data) {
+          setPricingVisible(data.setting_value.pricing_visible);
+        } else {
+          // If no setting found, assume default true
+          setPricingVisible(true);
+        }
+      } catch (error: any) {
+        console.error('Failed to fetch pricing visibility setting:', error.message);
+        setPricingVisible(true); // Default to visible on error
+      } finally {
+        setLoadingSettings(false);
+      }
+    };
+
+    fetchPricingVisibility();
+  }, []);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
     navigate('/login');
   };
 
-  // Determine if the current path is the dashboard or an admin page
   const isOnDashboard = location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/admin');
 
   return (
@@ -37,7 +69,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({ className }) => {
       </Link>
 
       <nav className="flex items-center space-x-4">
-        {!isOnDashboard && ( // Conditionally render these links
+        {!isOnDashboard && (
           <>
             <Link to="/#home" className="text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors">
               Home
@@ -45,9 +77,13 @@ const AppHeader: React.FC<AppHeaderProps> = ({ className }) => {
             <Link to="/#features" className="text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors">
               Features
             </Link>
-            <Link to="/#pricing" className="text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors">
-              Pricing
-            </Link>
+            {loadingSettings ? (
+              <span className="text-gray-500 dark:text-gray-400">Loading...</span>
+            ) : pricingVisible && (
+              <Link to="/#pricing" className="text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors">
+                Pricing
+              </Link>
+            )}
           </>
         )}
         {session ? (
