@@ -6,6 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useSession } from '@/integrations/supabase/session-context';
 import { showError } from '@/utils/toast';
 import { Loader2, UploadCloud, Scissors, Combine, Trash2, Download } from 'lucide-react';
+import { cn } from '@/lib/utils'; // Import cn for utility classes
 
 interface AnalyticsData {
   totalUploads: number;
@@ -17,6 +18,40 @@ interface AnalyticsData {
   totalAllSplitDeletes: number;
   totalAllSplitDownloads: number;
 }
+
+interface KpiCardProps {
+  icon: React.ElementType;
+  label: string;
+  value: number;
+  bgColorClass: string;
+  iconColorClass: string;
+  glowColorClass: string;
+}
+
+const KpiCard: React.FC<KpiCardProps> = ({ icon: Icon, label, value, bgColorClass, iconColorClass, glowColorClass }) => (
+  <Card className={cn(
+    "group relative flex flex-col justify-between h-full p-4 rounded-lg shadow-sm transition-all duration-300 ease-in-out transform hover:scale-[1.02] border-none overflow-hidden",
+    bgColorClass
+  )}>
+    {/* Colored immersive glow on hover */}
+    <div className={cn(
+      "absolute inset-0 rounded-lg z-0",
+      "bg-radial-gradient", // Uses the custom radial gradient defined in tailwind.config.ts
+      glowColorClass, // This will define the 'from' color of the radial gradient
+      "opacity-0 group-hover:opacity-100 transition-opacity duration-300",
+      "scale-0 group-hover:scale-125 transition-transform duration-300 ease-out",
+      "filter blur-2xl"
+    )}></div>
+    <div className="relative z-10 flex items-center space-x-3">
+      <Icon className={cn("h-6 w-6 drop-shadow-md", iconColorClass)} />
+      <div>
+        <p className="text-sm text-gray-600 dark:text-gray-400">{label}</p>
+        <p className="text-xl font-semibold text-gray-900 dark:text-white">{value}</p>
+      </div>
+    </div>
+  </Card>
+);
+
 
 const UsageAnalyticsCard = () => {
   const { user } = useSession();
@@ -107,48 +142,54 @@ const UsageAnalyticsCard = () => {
         </CardTitle>
       </CardHeader>
       <CardContent className="p-0 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div className="flex items-center space-x-3 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg shadow-sm">
-          <UploadCloud className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-          <div>
-            <p className="text-sm text-gray-600 dark:text-gray-400">PDFs Uploaded</p>
-            <p className="text-xl font-semibold text-gray-900 dark:text-white">{analytics.totalUploads}</p>
-          </div>
-        </div>
-        <div className="flex items-center space-x-3 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg shadow-sm">
-          <Scissors className="h-6 w-6 text-green-600 dark:text-green-400" />
-          <div>
-            <p className="text-sm text-gray-600 dark:text-gray-400">PDFs Split</p>
-            <p className="text-xl font-semibold text-gray-900 dark:text-white">{analytics.totalSplits}</p>
-          </div>
-        </div>
-        <div className="flex items-center space-x-3 p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg shadow-sm">
-          <Combine className="h-6 w-6 text-purple-600 dark:text-purple-400" />
-          <div>
-            <p className="text-sm text-gray-600 dark:text-gray-400">PDFs Merged</p>
-            <p className="text-xl font-semibold text-gray-900 dark:text-white">{analytics.totalMerges}</p>
-          </div>
-        </div>
-        <div className="flex items-center space-x-3 p-4 bg-red-50 dark:bg-red-900/20 rounded-lg shadow-sm">
-          <Trash2 className="h-6 w-6 text-red-600 dark:text-red-400" />
-          <div>
-            <p className="text-sm text-gray-600 dark:text-gray-400">Original PDFs Deleted</p>
-            <p className="text-xl font-semibold text-gray-900 dark:text-white">{analytics.totalDeletes}</p>
-          </div>
-        </div>
-        <div className="flex items-center space-x-3 p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg shadow-sm">
-          <Trash2 className="h-6 w-6 text-yellow-600 dark:text-yellow-400" />
-          <div>
-            <p className="text-sm text-gray-600 dark:text-gray-400">Split Pages Deleted</p>
-            <p className="text-xl font-semibold text-gray-900 dark:text-white">{analytics.totalSplitPageDeletes + analytics.totalSplitGroupDeletes + analytics.totalAllSplitDeletes}</p>
-          </div>
-        </div>
-        <div className="flex items-center space-x-3 p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg shadow-sm">
-          <Download className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
-          <div>
-            <p className="text-sm text-gray-600 dark:text-gray-400">All Split PDFs Downloaded</p>
-            <p className="text-xl font-semibold text-gray-900 dark:text-white">{analytics.totalAllSplitDownloads}</p>
-          </div>
-        </div>
+        <KpiCard
+          icon={UploadCloud}
+          label="PDFs Uploaded"
+          value={analytics.totalUploads}
+          bgColorClass="bg-blue-50 dark:bg-blue-900/20"
+          iconColorClass="text-blue-600 dark:text-blue-400"
+          glowColorClass="from-blue-300/70"
+        />
+        <KpiCard
+          icon={Scissors}
+          label="PDFs Split"
+          value={analytics.totalSplits}
+          bgColorClass="bg-green-50 dark:bg-green-900/20"
+          iconColorClass="text-green-600 dark:text-green-400"
+          glowColorClass="from-green-300/70"
+        />
+        <KpiCard
+          icon={Combine}
+          label="PDFs Merged"
+          value={analytics.totalMerges}
+          bgColorClass="bg-purple-50 dark:bg-purple-900/20"
+          iconColorClass="text-purple-600 dark:text-purple-400"
+          glowColorClass="from-purple-300/70"
+        />
+        <KpiCard
+          icon={Trash2}
+          label="Original PDFs Deleted"
+          value={analytics.totalDeletes}
+          bgColorClass="bg-red-50 dark:bg-red-900/20"
+          iconColorClass="text-red-600 dark:text-red-400"
+          glowColorClass="from-red-300/70"
+        />
+        <KpiCard
+          icon={Trash2}
+          label="Split Pages Deleted"
+          value={analytics.totalSplitPageDeletes + analytics.totalSplitGroupDeletes + analytics.totalAllSplitDeletes}
+          bgColorClass="bg-yellow-50 dark:bg-yellow-900/20"
+          iconColorClass="text-yellow-600 dark:text-yellow-400"
+          glowColorClass="from-yellow-300/70"
+        />
+        <KpiCard
+          icon={Download}
+          label="All Split PDFs Downloaded"
+          value={analytics.totalAllSplitDownloads}
+          bgColorClass="bg-indigo-50 dark:bg-indigo-900/20"
+          iconColorClass="text-indigo-600 dark:text-indigo-400"
+          glowColorClass="from-indigo-300/70"
+        />
       </CardContent>
     </Card>
   );
