@@ -10,7 +10,7 @@ interface FeatureCardProps {
   description: string;
   icon: LucideIcon;
   bgColorClass: string; // Tailwind class for background color/gradient
-  glowColorClass: string; // Tailwind class for the glow color (e.g., 'from-blue-300/70')
+  glowColorClass: string; // Tailwind class for the glow color (e.g., 'bg-blue-300/70')
 }
 
 const FeatureCard: React.FC<FeatureCardProps> = ({ title, description, icon: Icon, bgColorClass, glowColorClass }) => {
@@ -21,12 +21,13 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ title, description, icon: Ico
     )}>
       {/* Colored immersive glow on hover */}
       <div className={cn(
-        "absolute inset-0 rounded-3xl z-0",
-        "bg-radial-gradient", // Uses the custom radial gradient defined in tailwind.config.ts
-        glowColorClass, // This will define the 'from' color of the radial gradient
+        "absolute rounded-3xl z-0",
+        "inset-[-10px]", // Creates a spread effect by extending 10px on all sides
+        "translate-x-2 translate-y-2", // Offsets the glow slightly to the bottom-right
+        glowColorClass, // Now expects a direct bg- color class
         "opacity-0 group-hover:opacity-100 transition-opacity duration-300",
-        "scale-0 group-hover:scale-125 transition-transform duration-300 ease-out",
-        "filter blur-2xl"
+        "transition-transform duration-300 ease-out", // Smooth transition for the offset
+        "filter blur-2xl" // Applies a 40px blur for a soft glow
       )}></div>
       
       <CardHeader className="relative z-10 p-0 mb-6">

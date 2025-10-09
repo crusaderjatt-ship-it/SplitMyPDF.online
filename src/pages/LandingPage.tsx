@@ -126,28 +126,28 @@ const LandingPage = () => {
               description="Securely upload and store your PDF documents in the cloud. Access them anytime, anywhere, with robust security."
               icon={UploadCloud}
               bgColorClass="bg-gradient-to-br from-blue-600 to-blue-400 dark:from-blue-800 dark:to-blue-600"
-              glowColorClass="from-blue-300/70 dark:from-blue-600/70"
+              glowColorClass="bg-blue-300/70 dark:bg-blue-600/70"
             />
             <FeatureCard
               title="Split PDFs"
               description="Effortlessly break down large PDF files into individual pages or smaller, manageable documents. Perfect for extracting specific sections."
               icon={Scissors}
               bgColorClass="bg-gradient-to-br from-green-600 to-green-400 dark:from-green-800 dark:to-green-600"
-              glowColorClass="from-green-300/70 dark:from-green-600/70"
+              glowColorClass="bg-green-300/70 dark:bg-green-600/70"
             />
             <FeatureCard
               title="Merge PDFs"
               description="Combine multiple PDF files into a single, cohesive document. Streamline your reports, presentations, and consolidate information."
               icon={Combine}
               bgColorClass="bg-gradient-to-br from-purple-600 to-purple-400 dark:from-purple-800 dark:to-purple-600"
-              glowColorClass="from-purple-300/70 dark:from-purple-600/70"
+              glowColorClass="bg-purple-300/70 dark:bg-purple-600/70"
             />
             <FeatureCard
               title="Organize & Download"
               description="Keep your documents perfectly organized and download split or merged files with a single click, including convenient ZIP archives."
               icon={FolderArchive}
               bgColorClass="bg-gradient-to-br from-orange-600 to-orange-400 dark:from-orange-800 dark:to-orange-600"
-              glowColorClass="from-orange-300/70 dark:from-orange-600/70"
+              glowColorClass="bg-orange-300/70 dark:bg-orange-600/70"
             />
           </div>
         </div>
