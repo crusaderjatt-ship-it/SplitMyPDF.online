@@ -9,29 +9,12 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import AdminPricingPage from "./pages/AdminPricingPage";
 import { SessionContextProvider, useSession } from "./integrations/supabase/session-context";
-import React, { useEffect } from "react"; // Import useEffect
+import React, { useEffect } from "react";
 import { ThemeProvider } from "@/components/theme-provider";
 import AppHeader from "@/components/AppHeader";
-import { useTheme } from "next-themes"; // Import useTheme
+import { useTheme } from "next-themes";
 
 const queryClient = new QueryClient();
-
-// Component to visually indicate theme status and log it
-const ThemeStatusIndicator = () => {
-  const { theme, resolvedTheme } = useTheme();
-
-  useEffect(() => {
-    console.log("Current theme (from next-themes):", theme);
-    console.log("Resolved theme (from next-themes):", resolvedTheme);
-    // You can also inspect document.documentElement.classList in browser dev tools
-  }, [theme, resolvedTheme]);
-
-  return (
-    <div className="fixed top-2 right-2 p-2 rounded-md text-white text-xs z-[9999] bg-red-500 dark:bg-green-500">
-      Theme: {resolvedTheme}
-    </div>
-  );
-};
 
 // ProtectedRoute component to guard routes that require authentication
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -51,6 +34,17 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 // Component to handle conditional routing based on authentication status
 const AppRoutes = () => {
   const { session, isLoading } = useSession();
+  const { resolvedTheme } = useTheme(); // Get the resolved theme
+
+  // Manually apply the 'dark' class to the html element
+  useEffect(() => {
+    const htmlElement = document.documentElement;
+    if (resolvedTheme === 'dark') {
+      htmlElement.classList.add('dark');
+    } else {
+      htmlElement.classList.remove('dark');
+    }
+  }, [resolvedTheme]);
 
   if (isLoading) {
     return <div className="min-h-screen flex items-center justify-center">Loading authentication...</div>;
@@ -62,7 +56,6 @@ const AppRoutes = () => {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/landing" element={<LandingPage />} />
-        {/* <Route path="/pricing" element={<PricingPage />} /> Removed: Pricing content is now on LandingPage */}
         <Route
           path="/"
           element={session ? <Navigate to="/dashboard" replace /> : <LandingPage />}
@@ -93,7 +86,6 @@ const AppRoutes = () => {
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
-      <ThemeStatusIndicator /> {/* Add this component */}
       <TooltipProvider>
         <Toaster />
         <Sonner />
