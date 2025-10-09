@@ -147,7 +147,7 @@ const UsageAnalyticsCard = () => {
           icon={UploadCloud}
           label="PDFs Uploaded"
           value={analytics.totalUploads}
-          bgColorClass="bg-blue-50 dark:bg-blue-900/20"
+          bgColorClass="bg-blue-50 dark:bg-gray-800"
           iconColorClass="text-blue-600 dark:text-blue-400"
           glowColorClass="from-blue-300/70"
         />
@@ -155,7 +155,7 @@ const UsageAnalyticsCard = () => {
           icon={Scissors}
           label="PDFs Split"
           value={analytics.totalSplits}
-          bgColorClass="bg-green-50 dark:bg-green-900/20"
+          bgColorClass="bg-green-50 dark:bg-gray-800"
           iconColorClass="text-green-600 dark:text-green-400"
           glowColorClass="from-green-300/70"
         />
@@ -163,7 +163,7 @@ const UsageAnalyticsCard = () => {
           icon={Combine}
           label="PDFs Merged"
           value={analytics.totalMerges}
-          bgColorClass="bg-purple-50 dark:bg-purple-900/20"
+          bgColorClass="bg-purple-50 dark:bg-gray-800"
           iconColorClass="text-purple-600 dark:text-purple-400"
           glowColorClass="from-purple-300/70"
         />
@@ -171,7 +171,7 @@ const UsageAnalyticsCard = () => {
           icon={Trash2}
           label="Original PDFs Deleted"
           value={analytics.totalDeletes}
-          bgColorClass="bg-red-50 dark:bg-red-900/20"
+          bgColorClass="bg-red-50 dark:bg-gray-800"
           iconColorClass="text-red-600 dark:text-red-400"
           glowColorClass="from-red-300/70"
         />
@@ -179,7 +179,7 @@ const UsageAnalyticsCard = () => {
           icon={Trash2}
           label="Split Pages Deleted"
           value={analytics.totalSplitPageDeletes + analytics.totalSplitGroupDeletes + analytics.totalAllSplitDeletes}
-          bgColorClass="bg-yellow-50 dark:bg-yellow-900/20"
+          bgColorClass="bg-yellow-50 dark:bg-gray-800"
           iconColorClass="text-yellow-600 dark:text-yellow-400"
           glowColorClass="from-yellow-300/70"
         />
@@ -187,7 +187,7 @@ const UsageAnalyticsCard = () => {
           icon={Download}
           label="All Split PDFs Downloaded"
           value={analytics.totalAllSplitDownloads}
-          bgColorClass="bg-indigo-50 dark:bg-indigo-900/20"
+          bgColorClass="bg-indigo-50 dark:bg-gray-800"
           iconColorClass="text-indigo-600 dark:text-indigo-400"
           glowColorClass="from-indigo-300/70"
         />
