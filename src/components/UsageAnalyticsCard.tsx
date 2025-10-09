@@ -134,7 +134,6 @@ const UsageAnalyticsCard = () => {
         </CardContent>
       </Card>
     );
-  );
   }
 
   return (
