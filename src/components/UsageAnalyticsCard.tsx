@@ -33,14 +33,16 @@ const KpiCard: React.FC<KpiCardProps> = ({ icon: Icon, label, value, bgColorClas
     "group relative flex flex-col justify-between h-full p-4 rounded-lg shadow-sm transition-all duration-300 ease-in-out transform hover:scale-[1.02] border-none overflow-hidden",
     bgColorClass
   )}>
-    {/* Colored immersive glow on hover */}
+    {/* Colored immersive glow on hover - adjusted for edge glow */}
     <div className={cn(
       "absolute inset-0 rounded-lg z-0",
-      "bg-radial-gradient", // Uses the custom radial gradient defined in tailwind.config.ts
-      glowColorClass, // This will define the 'from' color of the radial gradient
+      // Changed from bg-radial-gradient to a solid background color derived from glowColorClass
+      // This will convert 'from-blue-300/70' to 'bg-blue-300/70'
+      glowColorClass.replace('from-', 'bg-'), 
       "opacity-0 group-hover:opacity-100 transition-opacity duration-300",
-      "scale-0 group-hover:scale-125 transition-transform duration-300 ease-out",
-      "filter blur-2xl"
+      // Adjusted scale to make it appear slightly larger than the card, creating an edge glow
+      "scale-105 group-hover:scale-115 transition-transform duration-300 ease-out", 
+      "filter blur-2xl" // Increased blur for a softer, more diffused glow
     )}></div>
     <div className="relative z-10 flex items-center space-x-3">
       <Icon className={cn("h-6 w-6 drop-shadow-md", iconColorClass)} />
@@ -132,6 +134,7 @@ const UsageAnalyticsCard = () => {
         </CardContent>
       </Card>
     );
+  );
   }
 
   return (
