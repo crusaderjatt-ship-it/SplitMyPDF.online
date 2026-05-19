@@ -82,11 +82,15 @@ serve(async (req) => {
       throw new Error(`Failed to upload merged PDF: ${uploadError.message}`);
     }
 
-    const { data: publicUrlData } = supabaseClient.storage
+    const { data: signedUrlData, error: signedUrlError } = await supabaseClient.storage
       .from('user_pdfs')
-      .getPublicUrl(mergedFilePath);
+      .createSignedUrl(mergedFilePath, 60 * 10);
 
-    return new Response(JSON.stringify({ mergedPdfUrl: publicUrlData.publicUrl, mergedPdfPath: mergedFilePath }), {
+    if (signedUrlError || !signedUrlData?.signedUrl) {
+      throw new Error('Failed to create signed URL for merged PDF');
+    }
+
+    return new Response(JSON.stringify({ mergedPdfUrl: signedUrlData.signedUrl, mergedPdfPath: mergedFilePath }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200,
     });

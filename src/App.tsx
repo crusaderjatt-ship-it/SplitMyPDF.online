@@ -8,11 +8,13 @@ import LandingPage from "./pages/LandingPage";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import AdminPricingPage from "./pages/AdminPricingPage";
+import PublicToolPage from "./pages/PublicToolPage";
+import GuidePage from "./pages/GuidePage";
 import { SessionContextProvider, useSession } from "./integrations/supabase/session-context";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { ThemeProvider } from "@/components/theme-provider";
-import AppHeader from "@/components/AppHeader";
 import { useTheme } from "next-themes";
+import { supabase } from "./integrations/supabase/client";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +28,46 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
   if (!session) {
     return <Navigate to="/login" replace />;
+  }
+
+  return <>{children}</>;
+};
+
+const AdminRoute = ({ children }: { children: React.ReactNode }) => {
+  const { user, isLoading } = useSession();
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [checkingAdmin, setCheckingAdmin] = useState(true);
+
+  useEffect(() => {
+    const checkAdmin = async () => {
+      if (!user) {
+        setCheckingAdmin(false);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("admin_users")
+        .select("user_id")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      setIsAdmin(Boolean(data) && !error);
+      setCheckingAdmin(false);
+    };
+
+    checkAdmin();
+  }, [user]);
+
+  if (isLoading || checkingAdmin) {
+    return <div className="min-h-screen flex items-center justify-center">Checking permissions...</div>;
+  }
+
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (!isAdmin) {
+    return <div className="min-h-screen flex items-center justify-center px-4 text-center">You do not have access to this admin area.</div>;
   }
 
   return <>{children}</>;
@@ -52,13 +94,14 @@ const AppRoutes = () => {
 
   return (
     <>
-      <AppHeader />
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/landing" element={<LandingPage />} />
+        <Route path="/tools/:toolSlug" element={<PublicToolPage />} />
+        <Route path="/guides/:guideSlug" element={<GuidePage />} />
         <Route
           path="/"
-          element={session ? <Navigate to="/dashboard" replace /> : <LandingPage />}
+          element={<LandingPage />}
         />
         <Route
           path="/dashboard"
@@ -71,9 +114,9 @@ const AppRoutes = () => {
         <Route
           path="/admin/pricing"
           element={
-            <ProtectedRoute>
+            <AdminRoute>
               <AdminPricingPage />
-            </ProtectedRoute>
+            </AdminRoute>
           }
         />
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

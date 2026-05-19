@@ -91,7 +91,7 @@ serve(async (req) => {
 
       const splitPdfBytes = await newPdf.save();
       const partNumber = Math.floor(i / actualPagesPerSplit) + 1;
-      const splitFileName = `${originalFileName}_part_${partNumber}.pdf`;
+      const splitFileName = `${originalFileName}_page_${partNumber}.pdf`;
       const splitFilePath = `${splitFolder}/${splitFileName}`;
 
       const { data: uploadData, error: uploadError } = await supabaseClient.storage
@@ -106,11 +106,15 @@ serve(async (req) => {
         throw new Error(`Failed to upload split PDF part ${partNumber}: ${uploadError.message}`);
       }
 
-      const { data: publicUrlData } = supabaseClient.storage
+      const { data: signedUrlData, error: signedUrlError } = await supabaseClient.storage
         .from('user_pdfs')
-        .getPublicUrl(splitFilePath);
-      
-      splitPdfUrls.push(publicUrlData.publicUrl);
+        .createSignedUrl(splitFilePath, 60 * 10);
+
+      if (signedUrlError || !signedUrlData?.signedUrl) {
+        throw new Error(`Failed to create signed URL for split PDF part ${partNumber}`);
+      }
+
+      splitPdfUrls.push(signedUrlData.signedUrl);
     }
 
     return new Response(JSON.stringify({ splitPdfUrls }), {
