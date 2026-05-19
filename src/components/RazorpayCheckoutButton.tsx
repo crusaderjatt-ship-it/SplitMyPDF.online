@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -32,10 +33,37 @@ const loadRazorpay = () =>
 
 const RazorpayCheckoutButton = ({ planId, label = "Upgrade", className }: RazorpayCheckoutButtonProps) => {
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const getCheckoutErrorMessage = (error: unknown) => {
+    const message = error instanceof Error ? error.message : String(error || "");
+
+    if (
+      message.includes("Failed to send a request to the Edge Function") ||
+      message.includes("FunctionsFetchError") ||
+      message.includes("not found")
+    ) {
+      return "Payments are not live yet. Deploy the Razorpay Edge Functions and configure Razorpay keys before accepting upgrades.";
+    }
+
+    if (message.includes("Unauthorized") || message.includes("JWT")) {
+      return "Please log in before upgrading to Pro.";
+    }
+
+    return message || "Payment could not be started.";
+  };
 
   const startCheckout = async () => {
     setLoading(true);
     try {
+      const { data: sessionData } = await supabase.auth.getSession();
+
+      if (!sessionData.session) {
+        showError("Please log in before upgrading to Pro.");
+        navigate(`/login?plan=${encodeURIComponent(planId)}`);
+        return;
+      }
+
       const loaded = await loadRazorpay();
       if (!loaded || !window.Razorpay) {
         throw new Error("Razorpay checkout could not be loaded.");
@@ -70,7 +98,7 @@ const RazorpayCheckoutButton = ({ planId, label = "Upgrade", className }: Razorp
 
       checkout.open();
     } catch (error: any) {
-      showError(error.message || "Payment could not be started.");
+      showError(getCheckoutErrorMessage(error));
     } finally {
       setLoading(false);
     }
