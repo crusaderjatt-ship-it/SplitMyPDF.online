@@ -33,7 +33,7 @@ const toolCopy: Record<ToolKind, {
 }> = {
   "split-pdf": {
     title: "Split PDF Online",
-    description: "Split application forms, certificates, scanned PDFs, and school documents directly in your browser.",
+    description: "Split forms, certificates, scanned PDFs, and long documents directly in your browser.",
     icon: Scissors,
     action: "Split PDF",
     acceptMultiple: false,
@@ -54,7 +54,7 @@ const toolCopy: Record<ToolKind, {
   },
   "compress-pdf": {
     title: "Compress PDF Online",
-    description: "Create a smaller PDF copy for online forms. Best-effort browser compression, with clear size messaging.",
+    description: "Create a smaller PDF copy for online uploads. Best-effort browser compression, with clear size messaging.",
     icon: FileArchive,
     action: "Compress PDF",
     acceptMultiple: false,
@@ -168,7 +168,7 @@ const PublicToolPage = () => {
               </p>
             </div>
             <div className="grid gap-3 sm:grid-cols-3">
-              {["No signup for basics", "Browser-first privacy", "Made for Indian forms"].map((item) => (
+              {["No signup for basics", "Browser-first privacy", "Ready for document uploads"].map((item) => (
                 <div key={item} className="rounded-md border bg-white p-3 text-sm font-medium text-slate-700 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200">
                   {item}
                 </div>
