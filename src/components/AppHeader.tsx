@@ -31,13 +31,13 @@ const AppHeader: React.FC<AppHeaderProps> = ({ className }) => {
       "flex items-center justify-between",
       className
     )}>
-      <Link to="/" className="flex items-center space-x-2 rounded-md bg-white px-2 py-1 shadow-sm ring-1 ring-slate-200 dark:ring-slate-700">
-        <img src="/SplitMyPDF_Logo.png" alt="Split My PDF Logo" className="h-12 w-auto" />
+      <Link to="/" className="flex shrink-0 items-center rounded-md bg-white px-2 py-1 shadow-sm ring-1 ring-slate-200 dark:ring-slate-700">
+        <img src="/SplitMyPDF_Logo.png" alt="Split My PDF Logo" className="h-10 w-auto min-w-[78px] object-contain sm:h-12 sm:min-w-[94px]" />
       </Link>
 
-      <nav className="flex items-center space-x-4">
+      <nav className="flex min-w-0 items-center gap-2 sm:gap-4">
         {!isOnDashboard && (
-          <>
+          <div className="hidden items-center gap-4 md:flex">
             <Link to="/tools/split-pdf" className="text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors">
               Split
             </Link>
@@ -50,7 +50,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({ className }) => {
             <a href="/#pricing" className="text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors">
               Pro
             </a>
-          </>
+          </div>
         )}
         {session ? (
           <>

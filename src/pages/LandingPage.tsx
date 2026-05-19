@@ -60,7 +60,7 @@ const LandingPage = () => {
             </div>
             <div className="flex flex-col gap-3 sm:flex-row">
               <Button asChild size="lg">
-                <Link to="/tools/compress-pdf">
+                <Link to="/tools/split-pdf">
                   Start with free tools
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
