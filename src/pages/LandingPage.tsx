@@ -100,15 +100,15 @@ const LandingPage = () => {
             <div className="flex gap-3">
               <Lock className="mt-1 h-5 w-5 text-blue-600" />
               <div>
-                <h2 className="font-semibold">Trust before monetization</h2>
-                <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-400">Free tools avoid uploads for small jobs. Cloud workflows use private signed downloads.</p>
+                <h2 className="font-semibold">Private for everyday files</h2>
+                <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-400">Small PDF tasks run in your browser. Account files use private signed downloads.</p>
               </div>
             </div>
             <div className="flex gap-3">
               <BadgeIndianRupee className="mt-1 h-5 w-5 text-blue-600" />
               <div>
-                <h2 className="font-semibold">Built for paid upgrades</h2>
-                <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-400">Razorpay Pro unlocks larger files, saved history, batch processing, and ad-free use.</p>
+                <h2 className="font-semibold">Ready for bigger document work</h2>
+                <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-400">Upgrade when you need larger files, saved history, and faster repeat workflows.</p>
               </div>
             </div>
             <div className="flex gap-3">
@@ -139,8 +139,8 @@ const LandingPage = () => {
         <section id="pricing" className="bg-slate-100 py-16 dark:bg-slate-900">
           <div className="mx-auto w-full max-w-6xl px-4">
             <div className="mb-8 max-w-2xl">
-              <h2 className="text-3xl font-bold tracking-normal">Free for quick jobs. Pro when documents become work.</h2>
-              <p className="mt-3 text-slate-700 dark:text-slate-300">Use ads and free tools for discovery, then upgrade when you need serious batch workflows.</p>
+              <h2 className="text-3xl font-bold tracking-normal">Free for quick PDF tasks. Pro for larger document work.</h2>
+              <p className="mt-3 text-slate-700 dark:text-slate-300">Start instantly for small files. Upgrade when you need bigger limits, saved documents, and repeat workflows.</p>
             </div>
             <div className="grid gap-5 md:grid-cols-3">
               <Card className="dark:border-slate-800 dark:bg-slate-950">
@@ -151,8 +151,8 @@ const LandingPage = () => {
                   <p className="text-3xl font-bold">₹0</p>
                   <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
                     <li>Browser-first small files</li>
-                    <li>Ads may appear on guide/result pages</li>
-                    <li>No saved history</li>
+                    <li>Single-session downloads</li>
+                    <li>No cloud history</li>
                   </ul>
                   <Button asChild variant="outline" className="w-full">
                     <Link to="/tools/split-pdf">Start free</Link>
@@ -167,8 +167,8 @@ const LandingPage = () => {
                   <p className="text-3xl font-bold">₹299/mo</p>
                   <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
                     <li>Larger files and more batches</li>
-                    <li>No ads while working</li>
-                    <li>Saved history and private cloud workspace</li>
+                    <li>Saved document history</li>
+                    <li>Private cloud workspace</li>
                   </ul>
                   <RazorpayCheckoutButton planId="pro-monthly" label="Upgrade monthly" className="w-full" />
                 </CardContent>
@@ -181,8 +181,8 @@ const LandingPage = () => {
                   <p className="text-3xl font-bold">₹2,499/yr</p>
                   <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
                     <li>Best for repeat document work</li>
-                    <li>Priority processing</li>
-                    <li>Early access to India workflow presets</li>
+                    <li>Best value for regular use</li>
+                    <li>Reusable document workflows</li>
                   </ul>
                   <RazorpayCheckoutButton planId="pro-yearly" label="Upgrade yearly" className="w-full" />
                 </CardContent>
