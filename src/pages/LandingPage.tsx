@@ -66,7 +66,7 @@ const LandingPage = () => {
                 </Link>
               </Button>
               <Button asChild size="lg" variant="outline">
-                <Link to="#pricing">View Pro plans</Link>
+                <a href="#pricing">View Pro plans</a>
               </Button>
             </div>
             <div className="grid gap-3 sm:grid-cols-3">
@@ -114,8 +114,8 @@ const LandingPage = () => {
             <div className="flex gap-3">
               <Sparkles className="mt-1 h-5 w-5 text-blue-600" />
               <div>
-                <h2 className="font-semibold">SEO pages with real utility</h2>
-                <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-400">Guides target form, certificate, and upload problems instead of generic PDF keywords only.</p>
+                <h2 className="font-semibold">Guides for real document problems</h2>
+                <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-400">Practical help for form uploads, certificates, scanned files, and strict PDF size limits.</p>
               </div>
             </div>
           </div>

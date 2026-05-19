@@ -31,8 +31,8 @@ const AppHeader: React.FC<AppHeaderProps> = ({ className }) => {
       "flex items-center justify-between",
       className
     )}>
-      <Link to="/" className="flex items-center space-x-2">
-        <img src="/SplitMyPDF_Logo.png" alt="Split My PDF Logo" className="h-10 w-auto" />
+      <Link to="/" className="flex items-center space-x-2 rounded-md bg-white px-2 py-1 shadow-sm ring-1 ring-slate-200 dark:ring-slate-700">
+        <img src="/SplitMyPDF_Logo.png" alt="Split My PDF Logo" className="h-12 w-auto" />
       </Link>
 
       <nav className="flex items-center space-x-4">
@@ -47,9 +47,9 @@ const AppHeader: React.FC<AppHeaderProps> = ({ className }) => {
             <Link to="/tools/compress-pdf" className="text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors">
               Compress
             </Link>
-            <Link to="/#pricing" className="text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors">
+            <a href="/#pricing" className="text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors">
               Pro
-            </Link>
+            </a>
           </>
         )}
         {session ? (
