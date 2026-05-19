@@ -38,7 +38,7 @@ const AdSenseSlot = ({ slot, className, label = "Advertisement" }: AdSenseSlotPr
   if (!clientId || !slot) {
     return (
       <div className={className}>
-        <div className="flex min-h-24 items-center justify-center rounded-md border border-dashed border-slate-300 bg-slate-50 text-xs uppercase tracking-wide text-slate-400 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-500">
+        <div className="flex min-h-24 items-center justify-center rounded-md border border-dashed border-slate-300 bg-slate-50 text-xs uppercase tracking-wide text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300">
           {label}
         </div>
       </div>

@@ -1,16 +1,15 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0';
 import { PDFDocument } from 'https://esm.sh/pdf-lib@1.17.1';
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+import { assertOwnedPath, getCorsHeaders, rejectDisallowedOrigin, sanitizePdfFileName } from "../_shared/cors.ts";
 
 serve(async (req) => {
+  const corsHeaders = getCorsHeaders(req);
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
+  const originError = rejectDisallowedOrigin(req);
+  if (originError) return originError;
 
   try {
     const supabaseClient = createClient(
@@ -40,6 +39,7 @@ serve(async (req) => {
         status: 400,
       });
     }
+    pdfPaths.forEach((path) => assertOwnedPath(path, user.id));
 
     const mergedPdf = await PDFDocument.create();
     const userFolder = user.id;
@@ -65,7 +65,7 @@ serve(async (req) => {
       copiedPages.forEach((page) => mergedPdf.addPage(page));
     }
 
-    const finalMergedFileName = mergedFileName || `merged_document_${Date.now()}.pdf`;
+    const finalMergedFileName = sanitizePdfFileName(mergedFileName || "", `merged_document_${Date.now()}.pdf`);
     const mergedFilePath = `${mergedFolder}/${finalMergedFileName}`;
     const mergedPdfBytes = await mergedPdf.save();
 

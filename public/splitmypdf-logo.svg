@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="188" height="72" viewBox="0 0 188 72" role="img" aria-labelledby="title desc">
+  <title id="title">SplitMyPDF.online</title>
+  <desc id="desc">SplitMyPDF.online PDF tools logo</desc>
+  <rect width="188" height="72" rx="10" fill="#ffffff"/>
+  <rect x="10" y="10" width="42" height="52" rx="7" fill="#ef4444"/>
+  <path d="M39 10v14h13" fill="#fecaca"/>
+  <path d="M39 10l13 14H39z" fill="#fca5a5"/>
+  <text x="31" y="31" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" fill="#ffffff">PDF</text>
+  <path d="M18 45h21" stroke="#fde047" stroke-width="9" stroke-linecap="round"/>
+  <path d="M37 35l14 10-14 10z" fill="#fde047"/>
+  <text x="64" y="30" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="800" fill="#0f172a">Split</text>
+  <text x="64" y="52" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="800" fill="#0284c7">MyPDF</text>
+  <text x="134" y="52" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" fill="#ef4444">online</text>
+</svg>

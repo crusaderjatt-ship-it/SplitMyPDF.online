@@ -1,257 +1,187 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Loader2 } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
-import { showError, showSuccess } from '@/utils/toast';
-import AppHeader from '@/components/AppHeader';
+import { useEffect, useState } from "react";
+import { Loader2 } from "lucide-react";
+import AppHeader from "@/components/AppHeader";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { supabase } from "@/integrations/supabase/client";
+import { showError, showSuccess } from "@/utils/toast";
 
-interface PricingTier {
+interface Plan {
   id: string;
   name: string;
-  description: string;
-  price: number;
-  features: string[];
+  price_inr: number;
+  billing_interval: string;
+  limits: Record<string, unknown>;
   is_active: boolean;
 }
 
-const AdminPricingPage = () => {
-  const [pricingTiers, setPricingTiers] = useState<PricingTier[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [pricingVisible, setPricingVisible] = useState(true); // New state for pricing visibility
-  const [savingVisibility, setSavingVisibility] = useState(false); // New state for saving visibility
+const formatLimits = (limits: Record<string, unknown>) => JSON.stringify(limits, null, 2);
 
-  const fetchPricingAndSettings = async () => {
+const AdminPricingPage = () => {
+  const [plans, setPlans] = useState<Plan[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [savingId, setSavingId] = useState<string | null>(null);
+
+  const fetchPlans = async () => {
     setLoading(true);
     try {
-      // Fetch pricing tiers
-      const { data: pricingData, error: pricingError } = await supabase
-        .from('pricing_tiers')
-        .select('*')
-        .order('name', { ascending: true });
+      const { data, error } = await supabase
+        .from("plans")
+        .select("id,name,price_inr,billing_interval,limits,is_active")
+        .order("price_inr", { ascending: true });
 
-      if (pricingError) {
-        throw pricingError;
-      }
-      setPricingTiers(pricingData || []);
-
-      // Fetch pricing visibility setting
-      const { data: settingsData, error: settingsError } = await supabase
-        .from('app_settings')
-        .select('setting_value')
-        .eq('setting_name', 'pricing_visibility')
-        .single();
-
-      if (settingsError && settingsError.code !== 'PGRST116') { // PGRST116 means no rows found
-        throw settingsError;
-      }
-
-      if (settingsData) {
-        setPricingVisible(settingsData.setting_value.pricing_visible);
-      } else {
-        // If no setting found, assume default true and insert it
-        await supabase.from('app_settings').insert({
-          setting_name: 'pricing_visibility',
-          setting_value: { pricing_visible: true },
-        });
-        setPricingVisible(true);
-      }
-
+      if (error) throw error;
+      setPlans((data || []) as Plan[]);
     } catch (error: any) {
-      showError(`Failed to load data: ${error.message}`);
+      showError(`Failed to load plans: ${error.message}`);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchPricingAndSettings();
+    fetchPlans();
   }, []);
 
-  const handleInputChange = (id: string, field: keyof PricingTier, value: any) => {
-    setPricingTiers((prev) =>
-      prev.map((tier) => (tier.id === id ? { ...tier, [field]: value } : tier))
+  const updatePlan = (id: string, changes: Partial<Plan>) => {
+    setPlans((currentPlans) =>
+      currentPlans.map((plan) => (plan.id === id ? { ...plan, ...changes } : plan)),
     );
   };
 
-  const handleFeaturesChange = (id: string, value: string) => {
-    setPricingTiers((prev) =>
-      prev.map((tier) =>
-        tier.id === id ? { ...tier, features: value.split('\n').map((f) => f.trim()).filter(Boolean) } : tier
-      )
-    );
-  };
-
-  const handleSavePricingTier = async (tier: PricingTier) => {
-    setSaving(true);
+  const handleLimitsChange = (id: string, value: string) => {
     try {
-      const { error } = await supabase
-        .from('pricing_tiers')
-        .update({
-          name: tier.name,
-          description: tier.description,
-          price: tier.price,
-          features: tier.features,
-          is_active: tier.is_active,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', tier.id);
-
-      if (error) {
-        throw error;
-      }
-
-      showSuccess(`${tier.name} pricing updated successfully!`);
-      fetchPricingAndSettings(); // Re-fetch to ensure latest data
-    } catch (error: any) {
-      showError(`Failed to save ${tier.name} pricing: ${error.message}`);
-    } finally {
-      setSaving(false);
+      updatePlan(id, { limits: JSON.parse(value) });
+    } catch {
+      updatePlan(id, { limits: { rawInvalidJson: value } });
     }
   };
 
-  const handleTogglePricingVisibility = async (checked: boolean | 'indeterminate') => {
-    if (typeof checked !== 'boolean') return;
+  const savePlan = async (plan: Plan) => {
+    if ("rawInvalidJson" in plan.limits) {
+      showError("Limits must be valid JSON before saving.");
+      return;
+    }
 
-    setSavingVisibility(true);
+    setSavingId(plan.id);
     try {
       const { error } = await supabase
-        .from('app_settings')
-        .update({ setting_value: { pricing_visible: checked }, updated_at: new Date().toISOString() })
-        .eq('setting_name', 'pricing_visibility');
+        .from("plans")
+        .update({
+          name: plan.name,
+          price_inr: plan.price_inr,
+          billing_interval: plan.billing_interval,
+          limits: plan.limits,
+          is_active: plan.is_active,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", plan.id);
 
-      if (error) {
-        throw error;
-      }
-
-      setPricingVisible(checked);
-      showSuccess(`Pricing section visibility updated to ${checked ? 'visible' : 'hidden'}.`);
+      if (error) throw error;
+      showSuccess(`${plan.name} updated.`);
+      fetchPlans();
     } catch (error: any) {
-      showError(`Failed to update pricing visibility: ${error.message}`);
+      showError(`Failed to save ${plan.name}: ${error.message}`);
     } finally {
-      setSavingVisibility(false);
+      setSavingId(null);
     }
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 dark:bg-gray-900 p-4">
+      <div className="min-h-screen bg-gray-100 p-4 pt-20 dark:bg-gray-900">
         <AppHeader />
-        <p className="text-gray-700 dark:text-gray-300 mt-20">Loading admin settings...</p>
+        <div className="mt-20 text-center text-gray-700 dark:text-gray-300">Loading admin plans...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white pt-20 pb-8">
+    <div className="min-h-screen bg-gray-100 pb-8 pt-20 text-gray-900 dark:bg-gray-900 dark:text-white">
       <AppHeader />
-      <div className="container mx-auto max-w-4xl px-4 py-12">
-        <h1 className="text-4xl font-bold text-center mb-10 text-gray-900 dark:text-white">
-          Admin: Manage Pricing Tiers & Settings
-        </h1>
+      <main className="container mx-auto max-w-4xl px-4 py-12">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold">Admin Pricing</h1>
+          <p className="mt-2 text-gray-600 dark:text-gray-400">
+            Manage the plans used by checkout, subscriptions, and public pricing.
+          </p>
+        </div>
 
-        {/* Pricing Visibility Toggle */}
-        <Card className="p-6 rounded-xl shadow-lg dark:bg-gray-800 border border-gray-200 dark:border-gray-700 mb-8">
-          <CardHeader className="p-0 mb-4">
-            <CardTitle className="text-2xl font-bold text-blue-700 dark:text-blue-300">
-              Homepage Pricing Section Visibility
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-0 flex items-center space-x-2">
-            <Checkbox
-              id="pricing-visibility"
-              checked={pricingVisible}
-              onCheckedChange={handleTogglePricingVisibility}
-              disabled={savingVisibility}
-            />
-            <Label htmlFor="pricing-visibility" className="text-lg text-gray-700 dark:text-gray-300">
-              Show Pricing Section on Homepage and in Navigation
-            </Label>
-            {savingVisibility && <Loader2 className="ml-2 h-4 w-4 animate-spin text-blue-600 dark:text-blue-400" />}
-          </CardContent>
-        </Card>
-
-        <div className="space-y-8">
-          {pricingTiers.map((tier) => (
-            <Card key={tier.id} className="p-6 rounded-xl shadow-lg dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-              <CardHeader className="p-0 mb-6">
-                <CardTitle className="text-3xl font-bold text-blue-700 dark:text-blue-300">
-                  {tier.name}
-                </CardTitle>
+        <div className="space-y-6">
+          {plans.map((plan) => (
+            <Card key={plan.id} className="dark:border-gray-700 dark:bg-gray-800">
+              <CardHeader>
+                <CardTitle>{plan.name}</CardTitle>
               </CardHeader>
-              <CardContent className="p-0 space-y-4">
+              <CardContent className="space-y-4">
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div>
+                    <Label htmlFor={`name-${plan.id}`}>Plan name</Label>
+                    <Input
+                      id={`name-${plan.id}`}
+                      value={plan.name}
+                      onChange={(event) => updatePlan(plan.id, { name: event.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor={`price-${plan.id}`}>Price in INR</Label>
+                    <Input
+                      id={`price-${plan.id}`}
+                      type="number"
+                      min="0"
+                      value={plan.price_inr}
+                      onChange={(event) => updatePlan(plan.id, { price_inr: Number(event.target.value) })}
+                    />
+                  </div>
+                </div>
+
                 <div>
-                  <Label htmlFor={`name-${tier.id}`} className="text-gray-700 dark:text-gray-300">Tier Name</Label>
+                  <Label htmlFor={`billing-${plan.id}`}>Billing interval</Label>
                   <Input
-                    id={`name-${tier.id}`}
-                    value={tier.name}
-                    onChange={(e) => handleInputChange(tier.id, 'name', e.target.value)}
-                    className="dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                    id={`billing-${plan.id}`}
+                    value={plan.billing_interval}
+                    onChange={(event) => updatePlan(plan.id, { billing_interval: event.target.value })}
                   />
                 </div>
+
                 <div>
-                  <Label htmlFor={`description-${tier.id}`} className="text-gray-700 dark:text-gray-300">Description</Label>
+                  <Label htmlFor={`limits-${plan.id}`}>Limits JSON</Label>
                   <Textarea
-                    id={`description-${tier.id}`}
-                    value={tier.description}
-                    onChange={(e) => handleInputChange(tier.id, 'description', e.target.value)}
-                    className="dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                    id={`limits-${plan.id}`}
+                    value={
+                      "rawInvalidJson" in plan.limits
+                        ? String(plan.limits.rawInvalidJson)
+                        : formatLimits(plan.limits)
+                    }
+                    onChange={(event) => handleLimitsChange(plan.id, event.target.value)}
+                    className="min-h-36 font-mono text-sm"
                   />
                 </div>
-                <div>
-                  <Label htmlFor={`price-${tier.id}`} className="text-gray-700 dark:text-gray-300">Price (e.g., 9.99 for Pro, 0 for Free)</Label>
-                  <Input
-                    id={`price-${tier.id}`}
-                    type="number"
-                    step="0.01"
-                    value={tier.price}
-                    onChange={(e) => handleInputChange(tier.id, 'price', parseFloat(e.target.value))}
-                    className="dark:bg-gray-700 dark:text-white dark:border-gray-600"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor={`features-${tier.id}`} className="text-gray-700 dark:text-gray-300">Features (one per line)</Label>
-                  <Textarea
-                    id={`features-${tier.id}`}
-                    value={tier.features.join('\n')}
-                    onChange={(e) => handleFeaturesChange(tier.id, e.target.value)}
-                    className="dark:bg-gray-700 dark:text-white dark:border-gray-600"
-                  />
-                </div>
-                <div className="flex items-center space-x-2">
+
+                <div className="flex items-center gap-2">
                   <Checkbox
-                    id={`is_active-${tier.id}`}
-                    checked={tier.is_active}
-                    onCheckedChange={(checked) => handleInputChange(tier.id, 'is_active', checked)}
+                    id={`active-${plan.id}`}
+                    checked={plan.is_active}
+                    onCheckedChange={(checked) => updatePlan(plan.id, { is_active: checked === true })}
                   />
-                  <Label htmlFor={`is_active-${tier.id}`} className="text-gray-700 dark:text-gray-300">Is Active</Label>
+                  <Label htmlFor={`active-${plan.id}`}>Active plan</Label>
                 </div>
-                <Button
-                  onClick={() => handleSavePricingTier(tier)}
-                  disabled={saving}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500 dark:hover:bg-blue-600"
-                >
-                  {saving ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Saving...
-                    </>
-                  ) : (
-                    'Save Changes'
-                  )}
+
+                <Button onClick={() => savePlan(plan)} disabled={savingId === plan.id} className="w-full">
+                  {savingId === plan.id && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  Save plan
                 </Button>
               </CardContent>
             </Card>
           ))}
         </div>
-      </div>
+      </main>
     </div>
   );
 };

@@ -1,4 +1,3 @@
-import { MadeWithDyad } from "@/components/made-with-dyad";
 import { useSession } from "@/integrations/supabase/session-context";
 import PdfWorkflowPage from "@/pages/PdfWorkflowPage";
 import AppHeader from "@/components/AppHeader";
@@ -59,8 +58,8 @@ const DashboardPage = () => {
         <UsageAnalyticsCard />
       </div>
 
-      <div className="mt-auto pb-4">
-        <MadeWithDyad />
+      <div className="mt-auto pb-4 text-sm text-gray-600 dark:text-gray-400">
+        SplitMyPDF.online
       </div>
     </div>
   );

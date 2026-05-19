@@ -32,7 +32,13 @@ const AppHeader: React.FC<AppHeaderProps> = ({ className }) => {
       className
     )}>
       <Link to="/" className="flex shrink-0 items-center rounded-md bg-white px-2 py-1 shadow-sm ring-1 ring-slate-200 dark:ring-slate-700">
-        <img src="/SplitMyPDF_Logo.png" alt="Split My PDF Logo" className="h-10 w-auto min-w-[78px] object-contain sm:h-12 sm:min-w-[94px]" />
+        <img
+          src="/splitmypdf-logo.svg"
+          alt="SplitMyPDF.online"
+          width={188}
+          height={72}
+          className="h-10 w-[105px] object-contain sm:h-12 sm:w-[125px]"
+        />
       </Link>
 
       <nav className="flex min-w-0 items-center gap-2 sm:gap-4">

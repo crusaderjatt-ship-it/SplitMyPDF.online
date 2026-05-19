@@ -7,7 +7,6 @@ import { useNavigate } from 'react-router-dom';
 import AppHeader from '@/components/AppHeader';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { CheckCircle2 } from 'lucide-react';
-import { MadeWithDyad } from '@/components/made-with-dyad';
 import { useTheme } from 'next-themes'; // Import useTheme
 
 const Login = () => {
@@ -150,7 +149,7 @@ const Login = () => {
         <p className="mb-1">
           <span className="font-semibold">SplitMyPDF.online:</span> Your ultimate tool for secure and efficient PDF management.
         </p>
-        <MadeWithDyad />
+        <span>Private PDF tools for everyday document work.</span>
       </footer>
     </div>
   );

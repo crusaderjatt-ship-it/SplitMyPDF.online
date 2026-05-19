@@ -1,10 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+import { getCorsHeaders, rejectDisallowedOrigin } from "../_shared/cors.ts";
 
 const planCatalog: Record<string, { name: string; amount: number; currency: string }> = {
   "pro-monthly": { name: "SplitMyPDF Pro Monthly", amount: 29900, currency: "INR" },
@@ -12,9 +8,12 @@ const planCatalog: Record<string, { name: string; amount: number; currency: stri
 };
 
 serve(async (req) => {
+  const corsHeaders = getCorsHeaders(req);
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
+  const originError = rejectDisallowedOrigin(req);
+  if (originError) return originError;
 
   try {
     const keyId = Deno.env.get("RAZORPAY_KEY_ID") || Deno.env.get("VITE_RAZORPAY_KEY_ID");
@@ -23,11 +22,19 @@ serve(async (req) => {
     if (!keyId || !keySecret) {
       throw new Error("Razorpay keys are not configured");
     }
+    const serviceRoleKey = Deno.env.get("SERVICE_ROLE_KEY");
+    if (!serviceRoleKey) {
+      throw new Error("Service role key is not configured");
+    }
 
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_ANON_KEY") ?? "",
       { global: { headers: { Authorization: req.headers.get("Authorization")! } } },
+    );
+    const supabaseAdmin = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      serviceRoleKey,
     );
 
     const { data: { user } } = await supabaseClient.auth.getUser();
@@ -69,6 +76,18 @@ serve(async (req) => {
     }
 
     const order = await response.json();
+    const { error: orderError } = await supabaseAdmin.from("payment_orders").insert({
+      razorpay_order_id: order.id,
+      user_id: user.id,
+      plan_id: planId,
+      amount: plan.amount,
+      currency: plan.currency,
+      status: "created",
+    });
+
+    if (orderError) {
+      throw orderError;
+    }
 
     return new Response(JSON.stringify({
       orderId: order.id,

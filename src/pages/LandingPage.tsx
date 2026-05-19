@@ -148,7 +148,7 @@ const LandingPage = () => {
                   <CardTitle>Free</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <p className="text-3xl font-bold">₹0</p>
+                  <p className="text-3xl font-bold">{"\u20b9"}0</p>
                   <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
                     <li>Browser-first small files</li>
                     <li>Single-session downloads</li>
@@ -164,7 +164,7 @@ const LandingPage = () => {
                   <CardTitle>Pro Monthly</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <p className="text-3xl font-bold">₹299/mo</p>
+                  <p className="text-3xl font-bold">{"\u20b9"}299/mo</p>
                   <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
                     <li>Larger files and more batches</li>
                     <li>Saved document history</li>
@@ -178,7 +178,7 @@ const LandingPage = () => {
                   <CardTitle>Pro Yearly</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <p className="text-3xl font-bold">₹2,499/yr</p>
+                  <p className="text-3xl font-bold">{"\u20b9"}2,499/yr</p>
                   <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
                     <li>Best for repeat document work</li>
                     <li>Best value for regular use</li>
@@ -192,7 +192,7 @@ const LandingPage = () => {
         </section>
       </main>
       <footer className="border-t bg-white py-8 text-center text-sm text-slate-500 dark:border-slate-800 dark:bg-slate-950">
-        <p>© {new Date().getFullYear()} SplitMyPDF.online. Free PDF tools with privacy-first processing.</p>
+        <p>&copy; {new Date().getFullYear()} SplitMyPDF.online. Free PDF tools with privacy-first processing.</p>
       </footer>
     </div>
   );

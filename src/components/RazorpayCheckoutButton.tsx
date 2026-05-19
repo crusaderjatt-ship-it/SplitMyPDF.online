@@ -34,6 +34,7 @@ const loadRazorpay = () =>
 const RazorpayCheckoutButton = ({ planId, label = "Upgrade", className }: RazorpayCheckoutButtonProps) => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const paymentsEnabled = import.meta.env.VITE_PAYMENTS_ENABLED === "true";
 
   const getCheckoutErrorMessage = (error: unknown) => {
     const message = error instanceof Error ? error.message : String(error || "");
@@ -43,7 +44,7 @@ const RazorpayCheckoutButton = ({ planId, label = "Upgrade", className }: Razorp
       message.includes("FunctionsFetchError") ||
       message.includes("not found")
     ) {
-      return "Payments are not live yet. Deploy the Razorpay Edge Functions and configure Razorpay keys before accepting upgrades.";
+      return "Payments are not live yet. Please try again after checkout is enabled.";
     }
 
     if (message.includes("Unauthorized") || message.includes("JWT")) {
@@ -54,6 +55,11 @@ const RazorpayCheckoutButton = ({ planId, label = "Upgrade", className }: Razorp
   };
 
   const startCheckout = async () => {
+    if (!paymentsEnabled) {
+      showError("Payments are coming soon. Free PDF tools are available now.");
+      return;
+    }
+
     setLoading(true);
     try {
       const { data: sessionData } = await supabase.auth.getSession();
@@ -87,7 +93,7 @@ const RazorpayCheckoutButton = ({ planId, label = "Upgrade", className }: Razorp
         order_id: data.orderId,
         handler: async (response: Record<string, string>) => {
           const verify = await supabase.functions.invoke("verify-razorpay-payment", {
-            body: { ...response, planId },
+            body: response,
           });
 
           if (verify.error) throw verify.error;
