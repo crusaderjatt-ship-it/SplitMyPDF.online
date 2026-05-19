@@ -48,7 +48,7 @@ const LandingPage = () => {
           <div className="space-y-7">
             <div className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white px-4 py-2 text-sm font-medium text-blue-700 dark:border-blue-900 dark:bg-slate-900 dark:text-blue-300">
               <Sparkles className="h-4 w-4" />
-              Free browser-first PDF tools for Indian document tasks
+              Free PDF tools for everyday document uploads
             </div>
             <div className="space-y-5">
               <h1 className="max-w-4xl text-4xl font-bold tracking-normal md:text-6xl">
